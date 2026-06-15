@@ -108,9 +108,9 @@ export default function Footer({ onNavigate }: FooterProps) {
           <div className="text-center md:text-left">
             <h4 className="font-semibold text-white mb-5 text-sm uppercase tracking-wider">Contact</h4>
             <ul className="space-y-4">
-              <li className="flex gap-3 justify-center md:justify-start">
-                <MapPin className="w-4 h-4 text-primary-400 mt-0.5 shrink-0" />
-                <div className="text-neutral-400 text-sm text-left">
+              <li className="flex flex-col md:flex-row gap-2 md:gap-3 items-center md:items-start justify-center md:justify-start">
+                <MapPin className="w-4 h-4 text-primary-400 md:mt-0.5 shrink-0" />
+                <div className="text-neutral-400 text-sm text-center md:text-left">
                   <p className="font-medium text-white">{clinic.name}</p>
                   <p>{clinic.address}</p>
                 </div>
