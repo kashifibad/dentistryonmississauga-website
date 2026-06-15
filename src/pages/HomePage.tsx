@@ -4,7 +4,6 @@ import {
   Shield, Clock, Heart, Award, ChevronLeft, ChevronRight,
   Sparkles, Stethoscope, Smile
 } from 'lucide-react';
-import { useClinicOpen } from '../hooks/useClinicOpen';
 import { clinic, clinicGroupMessage, telHref } from '../config/clinic';
 import LocationFinder from '../components/LocationFinder';
 
@@ -156,7 +155,6 @@ function useIntersection(ref: React.RefObject<HTMLElement>, threshold = 0.1) {
 
 export default function HomePage({ onNavigate }: HomePageProps) {
   const [testimonialIdx, setTestimonialIdx] = useState(0);
-  const open = useClinicOpen();
   const servicesRef = useRef<HTMLDivElement>(null!);
   const whyRef = useRef<HTMLDivElement>(null!);
   const servicesVisible = useIntersection(servicesRef);
@@ -231,17 +229,6 @@ export default function HomePage({ onNavigate }: HomePageProps) {
             {/* Left content */}
             <div>
               <div className="flex flex-col items-start gap-2 mb-6 animate-fade-in">
-                {/* Open/Closed badge - visible on mobile only (desktop shows it in the top bar) */}
-                <span
-                  className={`lg:hidden inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${
-                    open
-                      ? 'bg-green-500/20 border-green-400/40 text-green-300'
-                      : 'bg-red-500/20 border-red-400/40 text-red-300'
-                  }`}
-                >
-                  <span className={`w-1.5 h-1.5 rounded-full ${open ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`} />
-                  {open ? 'Open Now' : 'Closed'}
-                </span>
                 <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-white/90 text-sm font-medium">
                   <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
                   CDCP Registered Provider - Direct Billing Available
