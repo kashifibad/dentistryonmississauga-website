@@ -9,18 +9,25 @@ interface NavbarProps {
 }
 
 const services = [
-  { label: 'Cosmetic Dentistry', page: 'services', hash: 'cosmetic' },
-  { label: 'Restorative Dentistry', page: 'services', hash: 'restorative' },
-  { label: 'General Dentistry', page: 'services', hash: 'general' },
-  { label: 'Teeth Whitening', page: 'services', hash: 'whitening' },
-  { label: 'Dental Implants', page: 'services', hash: 'implants' },
+  { label: 'Preventive & Family', page: 'services', hash: 'preventive' },
   { label: 'Emergency Dental', page: 'services', hash: 'emergency' },
+  { label: 'Restorative Dentistry', page: 'services', hash: 'restorative' },
+  { label: 'Root Canal Treatment', page: 'services', hash: 'root-canal' },
+  { label: 'Cosmetic Dentistry', page: 'services', hash: 'cosmetic' },
+  { label: 'Implants & Missing Teeth', page: 'services', hash: 'implants' },
+  { label: 'Insurance & Direct Billing', page: 'services', hash: 'coverage' },
+];
+
+const insuranceLinks = [
+  { label: 'CDCP', page: 'insurance', hash: 'cdcp' },
+  { label: 'ODSP', page: 'insurance', hash: 'odsp' },
+  { label: 'Private Insurance', page: 'insurance', hash: 'private-insurance' },
 ];
 
 export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const open = useClinicOpen();
 
   useEffect(() => {
@@ -31,16 +38,22 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
 
   const navLinks = [
     { label: 'Home', page: 'home' },
-    { label: 'Services', page: 'services', hasDropdown: true },
+    { label: 'Services', page: 'services', dropdown: 'services' },
+    { label: 'Insurance', page: 'insurance', dropdown: 'insurance' },
     { label: 'About', page: 'about' },
-    { label: 'CDCP', page: 'cdcp' },
     { label: 'Contact', page: 'contact' },
   ];
+
+  const getDropdownItems = (dropdown?: string) => {
+    if (dropdown === 'services') return services;
+    if (dropdown === 'insurance') return insuranceLinks;
+    return [];
+  };
 
   const handleNav = (page: string, hash?: string) => {
     onNavigate(page);
     setMobileOpen(false);
-    setServicesOpen(false);
+    setOpenDropdown(null);
     if (hash) {
       setTimeout(() => {
         const el = document.getElementById(hash);
@@ -57,7 +70,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
       <div className="bg-neutral-950 text-white text-sm py-2 hidden md:block border-b border-neutral-800">
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-4 text-neutral-400">
-            <span>Mon-Fri: 11AM-8PM &nbsp;|&nbsp; Sat: 10AM-5PM &nbsp;|&nbsp; Sun: Closed</span>
+            <span>3 connected clinics &nbsp;|&nbsp; Mon-Fri: 11AM-8PM &nbsp;|&nbsp; Sat: 10AM-5PM &nbsp;|&nbsp; Sun: Closed</span>
             <span
               className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
                 open
@@ -117,11 +130,11 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
             <div className="hidden lg:flex items-center gap-1">
               {navLinks.map((link) => (
                 <div key={link.page} className="relative">
-                  {link.hasDropdown ? (
+                  {link.dropdown ? (
                     <div
                       className="relative"
-                      onMouseEnter={() => setServicesOpen(true)}
-                      onMouseLeave={() => setServicesOpen(false)}
+                      onMouseEnter={() => setOpenDropdown(link.dropdown)}
+                      onMouseLeave={() => setOpenDropdown(null)}
                     >
                       <button
                         onClick={() => handleNav(link.page)}
@@ -132,11 +145,11 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
                         }`}
                       >
                         {link.label}
-                        <ChevronDown className={`w-3.5 h-3.5 transition-transform ${servicesOpen ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`w-3.5 h-3.5 transition-transform ${openDropdown === link.dropdown ? 'rotate-180' : ''}`} />
                       </button>
-                      {servicesOpen && (
+                      {openDropdown === link.dropdown && (
                         <div className="absolute top-full left-0 w-56 bg-white rounded-xl shadow-xl border border-neutral-100 py-2 mt-1">
-                          {services.map((s) => (
+                          {getDropdownItems(link.dropdown).map((s) => (
                             <button
                               key={s.hash}
                               onClick={() => handleNav(s.page, s.hash)}
@@ -208,9 +221,9 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
                 >
                   {link.label}
                 </button>
-                {link.hasDropdown && (
+                {link.dropdown && (
                   <div className="ml-4 space-y-1 mt-1">
-                    {services.map((s) => (
+                    {getDropdownItems(link.dropdown).map((s) => (
                       <button
                         key={s.hash}
                         onClick={() => handleNav(s.page, s.hash)}

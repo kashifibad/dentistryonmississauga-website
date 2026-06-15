@@ -1,24 +1,23 @@
 import { useState } from 'react';
-import { Phone, Mail, MapPin, Clock, Send, CheckCircle, Calendar, ExternalLink } from 'lucide-react';
-import { clinic, clinics, sharedHours, telHref } from '../config/clinic';
-
-const locations = [clinic, ...Object.values(clinics).filter((item) => item.id !== clinic.id)].map((item, index) => ({
-  ...item,
-  hours: sharedHours,
-  primary: index === 0,
-}));
+import { Phone, Mail, MapPin, Clock, Send, CheckCircle, Calendar, Shield } from 'lucide-react';
+import { clinic, clinics, clinicGroupMessage, telHref } from '../config/clinic';
+import LocationFinder from '../components/LocationFinder';
 
 const services = [
   'General Checkup & Cleaning',
+  'Preventive & Family Dentistry',
+  'Emergency Dental Care',
+  'Tooth Pain / Root Canal Consultation',
   'Cosmetic Dentistry',
   'Teeth Whitening',
-  'Dental Implants',
+  'Dental Implants / Missing Teeth Consultation',
   'Restorative Dentistry',
-  'Root Canal Treatment',
-  'Wisdom Teeth Extraction',
-  'Emergency Dental Care',
-  'CDCP Consultation',
-  'Pediatric Dentistry',
+  'Crowns, Bridges, or Dentures',
+  'Extractions / Oral Surgery Consultation',
+  'Gum Health / Periodontal Care',
+  'Clear Aligner / Orthodontic Consultation',
+  'Night Guard / Sports Guard / Dental Appliance',
+  'Insurance / Coverage Consultation',
   'Other',
 ];
 
@@ -32,7 +31,7 @@ const coverageTypes = [
   'Other',
 ];
 
-export default function ContactPage() {
+export default function ContactPage({ onNavigate }: { onNavigate?: (page: string) => void }) {
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -161,7 +160,7 @@ export default function ContactPage() {
             Book Your Appointment
           </h1>
           <p className="text-primary-200 text-lg max-w-2xl mx-auto">
-            New and emergency patients always welcome. We look forward to welcoming you to our clinic.
+            {clinicGroupMessage} Choose the location that works best for you and our team will help confirm the right visit.
           </p>
         </div>
         <div className="absolute bottom-0 left-0 right-0">
@@ -176,7 +175,7 @@ export default function ContactPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-5 gap-14">
             {/* Left: form */}
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-3" id="appointment-form">
               <div className="mb-8">
                 <h2 className="font-display text-3xl font-bold text-neutral-900 mb-2">Request an Appointment</h2>
                 <p className="text-neutral-500">Fill out the form and we'll contact you to confirm your appointment.</p>
@@ -419,6 +418,9 @@ export default function ContactPage() {
                         <option key={s} value={s}>{s}</option>
                       ))}
                     </select>
+                    <p className="text-xs text-neutral-400 mt-1.5">
+                      Available services may vary by location. If you need a specific treatment, our team will confirm the best clinic for your visit.
+                    </p>
                   </div>
 
                   {/* Preferred date/time */}
@@ -493,7 +495,14 @@ export default function ContactPage() {
 
                   <p className="text-xs text-neutral-400 text-center">
                     By submitting, you agree to our{' '}
-                    <span className="text-primary-600 cursor-pointer hover:underline">Privacy Policy</span>.
+                    <button
+                      type="button"
+                      onClick={() => onNavigate ? onNavigate('privacy') : window.location.assign('/privacy')}
+                      className="text-primary-600 cursor-pointer hover:underline"
+                    >
+                      Privacy Policy
+                    </button>
+                    .
                     We'll respond within one business day.
                   </p>
                 </form>
@@ -532,6 +541,29 @@ export default function ContactPage() {
                       <p>Sunday: Closed</p>
                     </div>
                   </div>
+                </div>
+              </div>
+
+              {/* Insurance support */}
+              <div className="bg-white rounded-2xl p-5 border border-primary-100 shadow-sm">
+                <div className="flex gap-3 items-start">
+                  <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center shrink-0">
+                    <Shield className="w-5 h-5 text-primary-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-neutral-900">Insurance & Coverage Help</h4>
+                    <p className="text-sm text-neutral-600 mt-1 leading-relaxed">
+                      We support CDCP, ODSP, and many private dental insurance plans. Share your coverage details in the appointment form and our team can help with direct billing questions before your visit.
+                    </p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 mt-4">
+                  {['CDCP registered', 'ODSP support', 'Private insurance', 'Self-pay questions'].map((item) => (
+                    <div key={item} className="flex items-center gap-2 text-xs text-neutral-600 bg-neutral-50 rounded-lg px-3 py-2">
+                      <CheckCircle className="w-3.5 h-3.5 text-teal-500 shrink-0" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -575,7 +607,7 @@ export default function ContactPage() {
                   <CheckCircle className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
                   <div>
                     <p className="font-semibold text-teal-900 text-sm">CDCP Patients Welcome</p>
-                    <p className="text-teal-700 text-xs mt-1">Eligible CDCP patients may have reduced or no out-of-pocket costs for covered services. We can help with direct billing.</p>
+                    <p className="text-teal-700 text-xs mt-1">Eligible CDCP patients may have reduced or no out-of-pocket costs for covered services. We can help with direct billing and coverage questions.</p>
                   </div>
                 </div>
               </div>
@@ -585,75 +617,9 @@ export default function ContactPage() {
       </section>
 
       {/* All locations */}
-      <section className="py-20 bg-neutral-50" id="locations">
+      <section className="py-20 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <span className="inline-block text-primary-600 font-semibold text-sm uppercase tracking-wider mb-3">Our Locations</span>
-            <h2 className="font-display text-4xl font-bold text-neutral-900">
-              Find a Clinic Near You
-            </h2>
-            <p className="text-neutral-500 mt-3">Three conveniently located dental clinics serving Mississauga, Brampton, and the greater GTA.</p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {locations.map((loc) => (
-              <div key={loc.name} className={`bg-white rounded-2xl overflow-hidden border shadow-sm card-hover ${loc.primary ? 'border-primary-200 ring-2 ring-primary-100' : 'border-neutral-100'}`}>
-                {/* Image */}
-                <div
-                  className="w-full h-48 bg-neutral-100 relative overflow-hidden bg-cover bg-center"
-                  style={{ backgroundImage: `url("${loc.heroImage}")` }}
-                  aria-label={loc.name}
-                  role="img"
-                >
-                  {loc.primary && (
-                    <div className="absolute top-3 left-3 bg-primary-600 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
-                      Main Location
-                    </div>
-                  )}
-                </div>
-
-                <div className="p-6">
-                  <h3 className="font-semibold text-neutral-900 mb-4">{loc.name}</h3>
-                  <div className="space-y-2.5 mb-5">
-                    <div className="flex gap-2.5 items-start text-sm">
-                      <MapPin className="w-4 h-4 text-primary-500 shrink-0 mt-0.5" />
-                      <span className="text-neutral-600">{loc.address}</span>
-                    </div>
-                    <div className="flex gap-2.5 items-center text-sm">
-                      <Phone className="w-4 h-4 text-primary-500 shrink-0" />
-                      <a href={`tel:${loc.phone.replace(/\D/g, '')}`} className="text-neutral-700 hover:text-primary-600 font-medium">
-                        {loc.phone}
-                      </a>
-                    </div>
-                    <div className="flex gap-2.5 items-center text-sm">
-                      <Mail className="w-4 h-4 text-primary-500 shrink-0" />
-                      <a href={`mailto:${loc.email}`} className="text-neutral-500 hover:text-primary-600 text-xs break-all">
-                        {loc.email}
-                      </a>
-                    </div>
-                    <div className="flex gap-2.5 items-start text-sm">
-                      <Clock className="w-4 h-4 text-primary-500 shrink-0 mt-0.5" />
-                      <div className="text-neutral-600 text-xs">
-                        {loc.hours.map((h) => (
-                          <p key={h.day}>{h.day}{h.time ? `: ${h.time}` : ''}</p>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  {loc.website && (
-                    <a
-                      href={loc.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-primary-600 hover:text-primary-700 text-sm font-medium transition-colors"
-                    >
-                      Visit Website <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+          <LocationFinder showMaps />
         </div>
       </section>
     </div>

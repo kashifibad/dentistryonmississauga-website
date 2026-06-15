@@ -5,7 +5,8 @@ import {
   Sparkles, Stethoscope, Smile
 } from 'lucide-react';
 import { useClinicOpen } from '../hooks/useClinicOpen';
-import { clinic, telHref } from '../config/clinic';
+import { clinic, clinicGroupMessage, telHref } from '../config/clinic';
+import LocationFinder from '../components/LocationFinder';
 
 // Google Reviews SVG logo
 function GoogleLogo({ className = 'w-6 h-6' }: { className?: string }) {
@@ -49,49 +50,58 @@ interface HomePageProps {
 
 const services = [
   {
-    icon: Sparkles,
-    title: 'Cosmetic Dentistry',
-    description: 'Transform your smile with teeth whitening, veneers, bonding, and cosmetic treatments tailored to your goals.',
-    hash: 'cosmetic',
+    icon: Stethoscope,
+    title: 'Preventive & Family Dentistry',
+    description: 'Exams, cleanings, digital X-rays, fluoride, sealants, and friendly care for children, adults, and seniors.',
+    hash: 'preventive',
     color: 'from-sky-500 to-blue-600',
     bg: 'bg-sky-50',
     iconColor: 'text-sky-600',
   },
   {
-    icon: Shield,
-    title: 'Restorative Dentistry',
-    description: 'Restore function and beauty with dental crowns, bridges, dentures, and implants.',
-    hash: 'restorative',
+    icon: Clock,
+    title: 'Emergency Dental Care',
+    description: 'Support for tooth pain, swelling, chipped or broken teeth, lost crowns or fillings, and urgent dental concerns.',
+    hash: 'emergency',
     color: 'from-teal-500 to-emerald-600',
     bg: 'bg-teal-50',
     iconColor: 'text-teal-600',
   },
   {
-    icon: Stethoscope,
-    title: 'General Dentistry',
-    description: 'Keep your mouth healthy with professional cleanings, X-rays, root canals, and extractions.',
-    hash: 'general',
+    icon: Shield,
+    title: 'Restorative Dentistry',
+    description: 'Fillings, crowns, bridges, inlays, onlays, dentures, and partial dentures to restore comfort and function.',
+    hash: 'restorative',
     color: 'from-blue-500 to-cyan-600',
     bg: 'bg-blue-50',
     iconColor: 'text-blue-600',
   },
   {
-    icon: Smile,
-    title: 'Teeth Whitening',
-    description: 'Professional whitening options designed around your goals, with guidance from the dental team.',
-    hash: 'whitening',
+    icon: Sparkles,
+    title: 'Cosmetic Dentistry',
+    description: 'Whitening, bonding, veneers, and smile consultations designed around your goals and comfort.',
+    hash: 'cosmetic',
     color: 'from-amber-500 to-orange-500',
     bg: 'bg-amber-50',
     iconColor: 'text-amber-600',
   },
   {
     icon: Heart,
-    title: 'Dental Implants',
-    description: 'A natural-looking option for replacing missing teeth. Ask the clinic whether implants may be right for you.',
+    title: 'Implants & Missing Teeth',
+    description: 'Consultations for missing teeth and implant-supported options where appropriate for your needs.',
     hash: 'implants',
     color: 'from-rose-500 to-pink-600',
     bg: 'bg-rose-50',
     iconColor: 'text-rose-600',
+  },
+  {
+    icon: Smile,
+    title: 'CDCP, ODSP & Insurance Support',
+    description: 'Coverage guidance, direct billing support, and help choosing the right location for your visit.',
+    hash: 'coverage',
+    color: 'from-indigo-500 to-violet-600',
+    bg: 'bg-indigo-50',
+    iconColor: 'text-indigo-600',
   },
 ];
 
@@ -106,9 +116,29 @@ const offers = [
   { text: 'Free Teeth Whitening' },
   { text: 'Direct Insurance Billing' },
   { text: 'CDCP Registered Provider' },
+  { text: '3 Connected Dental Clinics' },
   { text: 'Walk-In Patients Welcome' },
   { text: 'Emergency Dental Care' },
   { text: 'ODSP Accepted' },
+];
+
+const coverageHighlights = [
+  {
+    title: 'Direct insurance billing',
+    text: 'We can submit many dental insurance claims directly, helping reduce paperwork and making your visit simpler.',
+  },
+  {
+    title: 'CDCP patients welcome',
+    text: 'Eligible CDCP patients may have reduced or no out-of-pocket costs for covered services, depending on coverage level.',
+  },
+  {
+    title: 'ODSP support',
+    text: 'Our team can help patients with ODSP dental coverage understand next steps before their appointment.',
+  },
+  {
+    title: 'Coverage questions before you visit',
+    text: 'Not sure what applies to you? Share your coverage details and our front desk can help confirm the best next step.',
+  },
 ];
 
 function useIntersection(ref: React.RefObject<HTMLElement>, threshold = 0.1) {
@@ -201,7 +231,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
             {/* Left content */}
             <div>
               <div className="flex flex-col items-start gap-2 mb-6 animate-fade-in">
-                {/* Open/Closed badge — visible on mobile only (desktop shows it in the top bar) */}
+                {/* Open/Closed badge - visible on mobile only (desktop shows it in the top bar) */}
                 <span
                   className={`lg:hidden inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${
                     open
@@ -214,7 +244,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                 </span>
                 <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-white/90 text-sm font-medium">
                   <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
-                  CDCP Registered Provider — Direct Billing Available
+                  CDCP Registered Provider - Direct Billing Available
                 </div>
               </div>
 
@@ -226,11 +256,11 @@ export default function HomePage({ onNavigate }: HomePageProps) {
               </h1>
 
               <p className="text-primary-100 text-base sm:text-lg leading-relaxed mb-8 animate-fade-in-up animation-delay-200">
-                {clinic.name} provides professional, compassionate dental care for your entire family in {clinic.serviceArea}. Modern technology. Gentle touch. A smile you'll be proud of.
+                {clinic.name} is part of a connected group of three dental clinics serving Brampton, Mississauga, and the greater GTA. Choose the location that works best for your family and get gentle, modern care close to home.
               </p>
 
               <div className="flex flex-wrap gap-2 sm:gap-3 mb-8 sm:mb-10 animate-fade-in-up animation-delay-400">
-                {['Accepting New Patients', 'All Major Insurance', 'Walk-Ins Welcome'].map((t) => (
+                {['Accepting New Patients', 'Many Insurance Plans', '3 Convenient Locations', 'Walk-Ins Welcome'].map((t) => (
                   <span key={t} className="flex items-center gap-1.5 text-sm text-white/90 bg-white/10 border border-white/20 rounded-full px-3 sm:px-4 py-1.5">
                     <CheckCircle className="w-3.5 h-3.5 text-teal-300 shrink-0" />
                     {t}
@@ -257,14 +287,18 @@ export default function HomePage({ onNavigate }: HomePageProps) {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-4 sm:gap-6 mt-10 sm:mt-12 pt-8 sm:pt-10 border-t border-white/20 animate-fade-in-up animation-delay-800">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 mt-10 sm:mt-12 pt-8 sm:pt-10 border-t border-white/20 animate-fade-in-up animation-delay-800">
                 {[
                   { value: clinic.yearsExperience, label: 'Years Experience' },
                   { value: clinic.patientCount, label: 'Happy Patients' },
-                  { value: `${clinic.rating}★`, label: 'Google Rating' },
+                  { value: '3', label: 'Clinic Locations' },
+                  { value: clinic.rating, label: 'Google Rating', icon: Star },
                 ].map((s) => (
                   <div key={s.label}>
-                    <div className="text-2xl sm:text-3xl font-bold text-white font-display">{s.value}</div>
+                    <div className="text-2xl sm:text-3xl font-bold text-white font-display flex items-center gap-1">
+                      {s.value}
+                      {s.icon && <s.icon className="w-5 h-5 sm:w-6 sm:h-6 text-amber-300 fill-current" />}
+                    </div>
                     <div className="text-primary-200 text-xs sm:text-sm mt-1">{s.label}</div>
                   </div>
                 ))}
@@ -342,7 +376,11 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                       <Star className="w-4 h-4 text-amber-300 fill-current" />
                     </div>
                     <div>
-                      <p className="text-white text-xs font-semibold">{clinic.rating}-Star Rated</p>
+                      <p className="text-white text-xs font-semibold flex items-center gap-1">
+                        {clinic.rating}
+                        <Star className="w-3.5 h-3.5 text-amber-300 fill-current" />
+                        Rated
+                      </p>
                       <p className="text-white/70 text-xs">Google Reviews</p>
                     </div>
                   </div>
@@ -384,6 +422,13 @@ export default function HomePage({ onNavigate }: HomePageProps) {
         </div>
       </div>
 
+      {/* Location finder */}
+      <section className="py-16 sm:py-20 bg-neutral-50 border-b border-neutral-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <LocationFinder compact onNavigate={onNavigate} />
+        </div>
+      </section>
+
       {/* Services section */}
       <section ref={servicesRef} className="py-16 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -391,10 +436,10 @@ export default function HomePage({ onNavigate }: HomePageProps) {
             <span className="inline-block text-primary-600 font-semibold text-sm uppercase tracking-wider mb-3">What We Offer</span>
             <h2 className="font-display text-4xl lg:text-5xl font-bold text-neutral-900 mb-4">
               Complete Dental Care<br />
-              <span className="text-primary-600">Under One Roof</span>
+              <span className="text-primary-600">Across Three Locations</span>
             </h2>
             <p className="text-neutral-500 text-lg max-w-xl mx-auto">
-              From routine cleanings to full smile transformations. We proudly accept the Canadian Dental Care Plan.
+              {clinicGroupMessage} Available services may vary by location; our team will confirm the best clinic for your visit.
             </p>
           </div>
 
@@ -437,6 +482,55 @@ export default function HomePage({ onNavigate }: HomePageProps) {
         </div>
       </section>
 
+      {/* Insurance & Coverage */}
+      <section className="py-16 sm:py-20 bg-white border-y border-neutral-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-14 items-start">
+            <div>
+              <span className="inline-block text-primary-600 font-semibold text-sm uppercase tracking-wider mb-3">
+                Insurance & Coverage
+              </span>
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-900 mb-5">
+                Direct Billing Support Across All 3 Clinics
+              </h2>
+              <p className="text-neutral-600 text-lg leading-relaxed mb-6">
+                Across our connected group of dental clinics, we support CDCP, ODSP, and many private dental insurance plans. Our team can help review your coverage details, explain expected next steps, and direct you to the right clinic for your visit.
+              </p>
+              <p className="text-neutral-500 text-sm leading-relaxed mb-7">
+                Coverage varies by plan, patient eligibility, and treatment. We will help verify details before your appointment whenever possible.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => onNavigate('contact')}
+                  className="inline-flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-xl font-semibold text-sm shadow-lg shadow-primary-200 transition-all hover:-translate-y-0.5"
+                >
+                  Ask About Coverage
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => onNavigate('insurance')}
+                  className="inline-flex items-center justify-center gap-2 border border-neutral-200 hover:border-primary-300 hover:bg-primary-50 text-neutral-800 px-6 py-3 rounded-xl font-semibold text-sm transition-colors"
+                >
+                  Explore Insurance Options
+                </button>
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              {coverageHighlights.map((item) => (
+                <div key={item.title} className="bg-neutral-50 border border-neutral-100 rounded-2xl p-5">
+                  <div className="w-10 h-10 rounded-xl bg-primary-100 text-primary-600 flex items-center justify-center mb-4">
+                    <Shield className="w-5 h-5" />
+                  </div>
+                  <h3 className="font-semibold text-neutral-900 mb-2">{item.title}</h3>
+                  <p className="text-neutral-500 text-sm leading-relaxed">{item.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CDCP Banner */}
       <section className="bg-gradient-to-r from-neutral-900 to-neutral-800 py-16 relative overflow-hidden border-y border-neutral-700/50">
         <div className="absolute inset-0 opacity-20" style={{
@@ -462,10 +556,10 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                 </span>
               ))}
               <button
-                onClick={() => onNavigate('cdcp')}
+                onClick={() => onNavigate('insurance')}
                 className="mt-2 bg-teal-500 hover:bg-teal-400 text-white px-6 py-3 rounded-xl font-bold text-sm transition-all hover:-translate-y-0.5 shadow-lg"
               >
-                Check Your Eligibility
+                Review Coverage Options
               </button>
             </div>
           </div>
@@ -528,7 +622,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                     Dr. Rehman brings extensive clinical experience and a patient-focused approach to family, cosmetic, and restorative dentistry.
                   </p>
                   <div className="grid grid-cols-2 gap-2">
-                    {['Cosmetic Dentistry', 'Root Canal Treatment', 'Wisdom Teeth Extraction', 'Crown & Bridge Work'].map((spec) => (
+                    {['Cosmetic Dentistry', 'Root Canal Treatment', 'Emergency Dental Care', 'Crown & Bridge Work'].map((spec) => (
                       <span key={spec} className="text-xs bg-primary-50 text-primary-700 rounded-lg px-3 py-1.5 font-medium">
                         {spec}
                       </span>
@@ -639,7 +733,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
             Ready for a Healthier Smile?
           </h2>
           <p className="text-primary-100 text-lg mb-8">
-            New and emergency patients always welcome. We accept CDCP, ODSP, and all major insurance plans.
+            New and emergency patients are welcome across our connected group of three clinics. We accept CDCP, ODSP, and many major insurance plans.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button

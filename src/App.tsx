@@ -4,18 +4,18 @@ import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import ServicesPage from './pages/ServicesPage';
 import AboutPage from './pages/AboutPage';
-import CDCPPage from './pages/CDCPPage';
+import InsurancePage from './pages/CDCPPage';
 import ContactPage from './pages/ContactPage';
 import PrivacyPage from './pages/PrivacyPage';
 import { clinic } from './config/clinic';
 
-type Page = 'home' | 'services' | 'about' | 'cdcp' | 'contact' | 'privacy';
+type Page = 'home' | 'services' | 'insurance' | 'about' | 'contact' | 'privacy';
 
 const pagePaths: Record<Page, string> = {
   home: '/',
   services: '/services',
+  insurance: '/insurance',
   about: '/about',
-  cdcp: '/cdcp',
   contact: '/contact',
   privacy: '/privacy',
 };
@@ -23,8 +23,9 @@ const pagePaths: Record<Page, string> = {
 const pathPages: Record<string, Page> = {
   '/': 'home',
   '/services': 'services',
+  '/insurance': 'insurance',
+  '/cdcp': 'insurance',
   '/about': 'about',
-  '/cdcp': 'cdcp',
   '/contact': 'contact',
   '/privacy': 'privacy',
 };
@@ -73,12 +74,12 @@ export default function App() {
         return <HomePage onNavigate={handleNavigate} />;
       case 'services':
         return <ServicesPage onNavigate={handleNavigate} />;
+      case 'insurance':
+        return <InsurancePage onNavigate={handleNavigate} />;
       case 'about':
         return <AboutPage onNavigate={handleNavigate} />;
-      case 'cdcp':
-        return <CDCPPage onNavigate={handleNavigate} />;
       case 'contact':
-        return <ContactPage />;
+        return <ContactPage onNavigate={handleNavigate} />;
       case 'privacy':
         return <PrivacyPage onNavigate={handleNavigate} />;
       default:

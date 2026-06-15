@@ -1,5 +1,5 @@
 import { Award, Heart, Users, CheckCircle, Star, ArrowRight } from 'lucide-react';
-import { clinic } from '../config/clinic';
+import { clinic, clinicGroupMessage } from '../config/clinic';
 
 interface AboutPageProps {
   onNavigate: (page: string) => void;
@@ -8,7 +8,7 @@ interface AboutPageProps {
 const values = [
   { icon: Heart, title: 'Compassionate Care', desc: 'Every patient is treated with genuine care, empathy, and respect. Your comfort is our highest priority.' },
   { icon: Award, title: 'Clinical Excellence', desc: 'Continuous education and advanced training ensure we deliver the highest standard of dental care.' },
-  { icon: Users, title: 'Family-Centered', desc: 'We\'re proud to care for patients of all ages — from children\'s first visit to seniors\' ongoing care.' },
+  { icon: Users, title: 'Family-Centered', desc: 'We\'re proud to care for patients of all ages, from children\'s first visit to seniors\' ongoing care.' },
   { icon: Star, title: 'Honest & Transparent', desc: 'We provide clear treatment plans and honest recommendations, putting your long-term oral health first.' },
 ];
 
@@ -35,7 +35,7 @@ export default function AboutPage({ onNavigate }: AboutPageProps) {
             Meet Our Team
           </h1>
           <p className="text-primary-200 text-lg max-w-2xl mx-auto">
-            Dedicated professionals committed to transforming your smile and improving your oral health with expertise and compassion.
+            {clinicGroupMessage} Meet the people behind our shared care philosophy.
           </p>
         </div>
         <div className="absolute bottom-0 left-0 right-0">
@@ -52,24 +52,27 @@ export default function AboutPage({ onNavigate }: AboutPageProps) {
             <div>
               <span className="inline-block text-primary-600 font-semibold text-sm uppercase tracking-wider mb-3">Our Story</span>
               <h2 className="font-display text-4xl lg:text-5xl font-bold text-neutral-900 mb-5">
-                {clinic.shortName}'s Trusted<br />
-                <span className="text-primary-600">Dental Clinic</span>
+                One Team Philosophy,<br />
+                <span className="text-primary-600">Three Convenient Clinics</span>
               </h2>
               <p className="text-neutral-600 text-base leading-relaxed mb-5">
-                {clinic.name} was built around a clear mission: to provide professional, compassionate dental care to the communities we serve. We believe every patient deserves exceptional oral healthcare in a warm, welcoming environment.
+                {clinic.name} is part of a connected group of three dental clinics built around one clear mission: professional, compassionate dental care for the communities we serve.
               </p>
               <p className="text-neutral-600 text-base leading-relaxed mb-8">
-                Our clinic is equipped with the latest dental technology to ensure the most accurate diagnoses and comfortable treatment experiences. From digital X-rays to modern restorative materials, we invest in the tools that make a real difference in your care.
+                Across our Brampton and Mississauga locations, we use modern dental technology, clear communication, and coordinated support so patients can choose the clinic that works best for their schedule, location, and dental needs.
               </p>
               <div className="grid grid-cols-2 gap-4">
                 {[
                   { value: clinic.yearsExperience, label: 'Years Experience' },
                   { value: clinic.patientCount, label: 'Happy Patients' },
                   { value: '3', label: 'Locations' },
-                  { value: `${clinic.rating}★`, label: 'Google Rating' },
+                  { value: clinic.rating, label: 'Google Rating', icon: Star },
                 ].map((s) => (
                   <div key={s.label} className="bg-primary-50 rounded-2xl p-5 text-center">
-                    <div className="text-3xl font-bold font-display text-primary-700">{s.value}</div>
+                    <div className="text-3xl font-bold font-display text-primary-700 flex items-center justify-center gap-1">
+                      {s.value}
+                      {s.icon && <s.icon className="w-6 h-6 text-amber-400 fill-current" />}
+                    </div>
                     <div className="text-neutral-500 text-sm mt-1">{s.label}</div>
                   </div>
                 ))}
@@ -149,7 +152,7 @@ export default function AboutPage({ onNavigate }: AboutPageProps) {
                   {[1,2,3,4,5].map((s) => <Star key={s} className="w-4 h-4 text-amber-400 fill-current" />)}
                 </div>
                 <h3 className="font-display text-4xl font-bold text-neutral-900 mb-1">Dr. Nazia Rehman</h3>
-                <p className="text-primary-600 font-semibold text-lg mb-5">Doctor of Dental Medicine — Lead Dentist</p>
+                <p className="text-primary-600 font-semibold text-lg mb-5">Doctor of Dental Medicine | Lead Dentist</p>
                 <p className="text-neutral-600 leading-relaxed mb-5">
                   Dr. Rehman is proficient in all aspects of dentistry and has a particular interest in cosmetic dentistry, root canal treatments, wisdom teeth extractions, and crown & bridge work.
                 </p>
@@ -193,7 +196,7 @@ export default function AboutPage({ onNavigate }: AboutPageProps) {
               <div className="space-y-4">
                 {[
                   { name: 'Digital X-Rays', desc: 'Up to 90% less radiation than traditional X-rays with superior image quality' },
-                  { name: 'Intraoral Cameras', desc: 'See exactly what we see — clear images for better understanding of your treatment' },
+                  { name: 'Intraoral Cameras', desc: 'See exactly what we see, with clear images for better understanding of your treatment' },
                   { name: 'Sterilization Protocols', desc: 'Hospital-grade sterilization and infection control for your safety' },
                   { name: 'Comfortable Operatories', desc: 'Modern, fully-equipped treatment rooms designed for your comfort' },
                 ].map((t) => (
@@ -225,7 +228,7 @@ export default function AboutPage({ onNavigate }: AboutPageProps) {
             Come Meet the Team
           </h2>
           <p className="text-primary-200 mb-8">
-            We'd love to welcome you to our clinic. Book your first visit today.
+            We'd love to welcome you to the location that works best for you. Book your first visit today.
           </p>
           <button
             onClick={() => onNavigate('contact')}

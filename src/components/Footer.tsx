@@ -1,5 +1,5 @@
 import { Phone, Mail, MapPin, Clock, Facebook, Instagram, ExternalLink } from 'lucide-react';
-import { clinic, otherClinics, telHref } from '../config/clinic';
+import { allClinics, clinic, clinicGroupMessage, telHref } from '../config/clinic';
 
 interface FooterProps {
   onNavigate: (page: string) => void;
@@ -33,7 +33,7 @@ export default function Footer({ onNavigate }: FooterProps) {
               </p>
             </div>
             <p className="text-neutral-400 text-sm leading-relaxed mb-5">
-              Delivering professional, compassionate dental care for your whole family in {clinic.serviceArea}. Modern technology, gentle touch, and a smile you'll be proud of.
+              {clinicGroupMessage} Modern technology, gentle touch, and a smile you'll be proud of.
             </p>
             <div className="flex items-center justify-center md:justify-start gap-3">
               <a
@@ -60,12 +60,13 @@ export default function Footer({ onNavigate }: FooterProps) {
             <h4 className="font-semibold text-white mb-5 text-sm uppercase tracking-wider">Services</h4>
             <ul className="space-y-2.5">
               {[
-                { label: 'Cosmetic Dentistry', hash: 'cosmetic' },
-                { label: 'Restorative Dentistry', hash: 'restorative' },
-                { label: 'General Dentistry', hash: 'general' },
-                { label: 'Teeth Whitening', hash: 'whitening' },
-                { label: 'Dental Implants', hash: 'implants' },
+                { label: 'Preventive & Family', hash: 'preventive' },
                 { label: 'Emergency Dental Care', hash: 'emergency' },
+                { label: 'Restorative Dentistry', hash: 'restorative' },
+                { label: 'Root Canal Treatment', hash: 'root-canal' },
+                { label: 'Cosmetic Dentistry', hash: 'cosmetic' },
+                { label: 'Implants & Missing Teeth', hash: 'implants' },
+                { label: 'Insurance & Direct Billing', hash: 'coverage' },
               ].map((s) => (
                 <li key={s.hash}>
                   <button
@@ -85,11 +86,10 @@ export default function Footer({ onNavigate }: FooterProps) {
             <ul className="space-y-2.5">
               {[
                 { label: 'Home', page: 'home' },
+                { label: 'Insurance', page: 'insurance' },
                 { label: 'About Us', page: 'about' },
-                { label: 'CDCP Program', page: 'cdcp' },
                 { label: 'Contact Us', page: 'contact' },
                 { label: 'Book Appointment', page: 'contact' },
-                { label: 'Patient Forms', page: 'contact' },
                 { label: 'Privacy Policy', page: 'privacy' },
               ].map((l) => (
                 <li key={l.label}>
@@ -146,9 +146,9 @@ export default function Footer({ onNavigate }: FooterProps) {
       {/* Sister locations */}
       <div className="border-t border-neutral-700">
         <div className="max-w-7xl mx-auto px-6 py-10">
-          <p className="text-center text-neutral-300 text-xs font-semibold uppercase tracking-widest mb-6">Our Other Locations</p>
+          <p className="text-center text-neutral-300 text-xs font-semibold uppercase tracking-widest mb-6">Our 3 Dental Clinics</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
-            {otherClinics.map((item) => (
+            {allClinics.map((item) => (
               <a
                 key={item.id}
                 href={item.website}

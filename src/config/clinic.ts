@@ -33,6 +33,8 @@ export interface ClinicReview {
   date: string;
 }
 
+export const clinicGroupMessage = 'A connected group of three dental clinics serving Brampton, Mississauga, and the greater GTA.';
+
 export const sharedHours = [
   { day: 'Monday - Friday', time: '11:00 AM - 8:00 PM' },
   { day: 'Saturday', time: '10:00 AM - 5:00 PM' },
@@ -133,7 +135,7 @@ export const clinics: Record<ClinicId, ClinicConfig> = {
     website: 'https://dentistryonmississauga.com/',
     primary: true,
     metaTitle: 'Dentistry on Mississauga | Family Dental Clinic in Brampton and Mississauga',
-    metaDescription: 'Dentistry on Mississauga provides family, cosmetic, restorative, emergency, and CDCP dental care for patients in Brampton, Mississauga, and the GTA.',
+    metaDescription: 'Dentistry on Mississauga is part of a connected group of three dental clinics offering family, cosmetic, restorative, emergency, CDCP, and insurance-friendly dental care across Brampton, Mississauga, and the GTA.',
   },
   countryside: {
     id: 'countryside',
@@ -148,8 +150,8 @@ export const clinics: Record<ClinicId, ClinicConfig> = {
     phone: '905-458-6588',
     fax: '905-458-6388',
     email: 'csdentalclinic@gmail.com',
-    rating: '4.5',
-    reviewCount: 19,
+    rating: '4.2',
+    reviewCount: 22,
     reviews: [
       {
         name: 'Kashif Ibad',
@@ -227,7 +229,7 @@ export const clinics: Record<ClinicId, ClinicConfig> = {
     heroImage: '/Country-Side-Dental.png',
     website: 'https://countrysidedentalclinic.com/',
     metaTitle: 'Countryside Dental Clinic | Family Dental Clinic in Brampton',
-    metaDescription: 'Countryside Dental Clinic provides family, cosmetic, restorative, emergency, and CDCP dental care for patients in Brampton and the GTA.',
+    metaDescription: 'Countryside Dental Clinic is part of a connected group of three dental clinics offering family, cosmetic, restorative, emergency, CDCP, and insurance-friendly dental care across Brampton, Mississauga, and the GTA.',
   },
   ridgeway: {
     id: 'ridgeway',
@@ -320,7 +322,7 @@ export const clinics: Record<ClinicId, ClinicConfig> = {
     heroImage: '/Dentistry-on-Ridgeway.webp',
     website: 'https://dentistryonridgeway.com/',
     metaTitle: 'Dentistry on Ridgeway | Family Dental Clinic in Mississauga',
-    metaDescription: 'Dentistry on Ridgeway provides family, cosmetic, restorative, emergency, and CDCP dental care for patients in Mississauga and the GTA.',
+    metaDescription: 'Dentistry on Ridgeway is part of a connected group of three dental clinics offering family, cosmetic, restorative, emergency, CDCP, and insurance-friendly dental care across Brampton, Mississauga, and the GTA.',
   },
 };
 
@@ -328,8 +330,31 @@ const selectedClinicId = (import.meta.env.VITE_CLINIC_ID as ClinicId | undefined
 
 export const clinic = clinics[selectedClinicId] || clinics.mississauga;
 
+export const allClinics = Object.values(clinics);
+
 export const otherClinics = Object.values(clinics).filter((item) => item.id !== clinic.id);
 
 export function telHref(phone: string) {
   return `tel:+1${phone.replace(/\D/g, '')}`;
+}
+
+export function getMapSearchUrl(address: string) {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+}
+
+export function getMapEmbedUrl(address: string) {
+  return `https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`;
+}
+
+export function getDirectionsUrl(address: string, origin?: string) {
+  const params = new URLSearchParams({
+    api: '1',
+    destination: address,
+  });
+
+  if (origin?.trim()) {
+    params.set('origin', origin.trim());
+  }
+
+  return `https://www.google.com/maps/dir/?${params.toString()}`;
 }
