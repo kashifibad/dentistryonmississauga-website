@@ -67,7 +67,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
   return (
     <>
       {/* Top bar */}
-      <div className="bg-neutral-950 text-white text-xs py-2 md:hidden border-b border-neutral-800">
+      <div className="relative z-[60] bg-neutral-950 text-white text-xs py-2 md:hidden border-b border-neutral-800">
         <div className="px-4 flex items-center justify-between gap-3">
           <span
             className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-semibold border ${
@@ -87,7 +87,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
           </button>
         </div>
       </div>
-      <div className="bg-neutral-950 text-white text-sm py-2 hidden md:block border-b border-neutral-800">
+      <div className="relative z-[60] bg-neutral-950 text-white text-sm py-2 hidden md:block border-b border-neutral-800">
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 text-neutral-400">
             <span
@@ -106,7 +106,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
                 Hours of Operation
                 <ChevronDown className="w-3.5 h-3.5 transition-transform group-hover:rotate-180 group-focus-within:rotate-180" />
               </button>
-              <div className="invisible absolute left-0 top-full z-50 mt-2 w-64 rounded-xl border border-white/10 bg-neutral-950 p-4 opacity-0 shadow-2xl shadow-black/30 transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+              <div className="invisible absolute left-0 top-full z-[80] mt-2 w-64 rounded-xl border border-white/10 bg-neutral-950 p-4 opacity-0 shadow-2xl shadow-black/30 transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
                 <p className="mb-3 text-xs font-bold uppercase tracking-wider text-white">Hours of Operation</p>
                 <div className="space-y-2">
                   {sharedHours.map((item) => (
