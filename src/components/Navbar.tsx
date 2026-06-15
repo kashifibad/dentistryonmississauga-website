@@ -67,6 +67,26 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
   return (
     <>
       {/* Top bar */}
+      <div className="bg-neutral-950 text-white text-xs py-2 md:hidden border-b border-neutral-800">
+        <div className="px-4 flex items-center justify-between gap-3">
+          <span
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-semibold border ${
+              open
+                ? 'bg-green-500/15 border-green-400/40 text-green-300'
+                : 'bg-red-500/15 border-red-400/40 text-red-300'
+            }`}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full ${open ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`} />
+            {open ? 'Open Now' : 'Closed'}
+          </span>
+          <button
+            onClick={() => handleNav('contact')}
+            className="shrink-0 rounded-full bg-primary-600 px-3 py-1.5 font-bold text-white shadow-sm shadow-black/20"
+          >
+            Book Appt
+          </button>
+        </div>
+      </div>
       <div className="bg-neutral-950 text-white text-sm py-2 hidden md:block border-b border-neutral-800">
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-4 text-neutral-400">
@@ -105,21 +125,21 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
             : 'bg-white/95 backdrop-blur-md'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between h-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Logo */}
             <button
               onClick={() => handleNav('home')}
-              className="flex items-center gap-3 hover:opacity-90 transition-opacity"
+              className="flex min-w-0 items-center gap-2 sm:gap-3 hover:opacity-90 transition-opacity"
             >
               <img
                 src="/brand-mark.png"
                 alt={`${clinic.name} logo mark`}
-                className="h-14 w-14 object-contain"
+                className="h-11 w-11 sm:h-14 sm:w-14 shrink-0 object-contain"
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
-              <div className="hidden lg:block">
-                <span className="text-primary-700 font-black text-sm tracking-widest uppercase leading-tight block">
+              <div className="min-w-0">
+                <span className="text-primary-700 font-black text-[11px] sm:text-sm tracking-widest uppercase leading-tight block">
                   {clinic.headerLine1}<br />
                   <span className="text-teal-600">{clinic.headerLine2}</span>
                 </span>
