@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Phone, ChevronDown } from 'lucide-react';
+import { Menu, X, Phone, ChevronDown, Clock, Mail } from 'lucide-react';
 import { useClinicOpen } from '../hooks/useClinicOpen';
-import { clinic, telHref } from '../config/clinic';
+import { clinic, sharedHours, telHref } from '../config/clinic';
 
 interface NavbarProps {
   currentPage: string;
@@ -88,9 +88,8 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
         </div>
       </div>
       <div className="bg-neutral-950 text-white text-sm py-2 hidden md:block border-b border-neutral-800">
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          <div className="flex items-center gap-4 text-neutral-400">
-            <span>3 connected clinics &nbsp;|&nbsp; Mon-Fri: 11AM-8PM &nbsp;|&nbsp; Sat: 10AM-5PM &nbsp;|&nbsp; Sun: Closed</span>
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 text-neutral-400">
             <span
               className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
                 open
@@ -101,17 +100,36 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
               <span className={`w-1.5 h-1.5 rounded-full ${open ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`} />
               {open ? 'Open Now' : 'Closed'}
             </span>
+            <div className="relative group">
+              <button className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold text-neutral-300 transition-colors hover:bg-white/10 hover:text-white">
+                <Clock className="w-3.5 h-3.5" />
+                Hours of Operation
+                <ChevronDown className="w-3.5 h-3.5 transition-transform group-hover:rotate-180 group-focus-within:rotate-180" />
+              </button>
+              <div className="invisible absolute left-0 top-full z-50 mt-2 w-64 rounded-xl border border-white/10 bg-neutral-950 p-4 opacity-0 shadow-2xl shadow-black/30 transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                <p className="mb-3 text-xs font-bold uppercase tracking-wider text-white">Hours of Operation</p>
+                <div className="space-y-2">
+                  {sharedHours.map((item) => (
+                    <div key={item.day} className="flex items-start justify-between gap-4 text-xs">
+                      <span className="text-neutral-400">{item.day}</span>
+                      <span className="font-semibold text-white text-right">{item.time}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-6">
-            <a href={`mailto:${clinic.email}`} className="text-neutral-400 hover:text-white transition-colors">
-              {clinic.email}
+          <div className="flex items-center gap-2">
+            <a href={`mailto:${clinic.email}`} className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold text-neutral-300 transition-colors hover:bg-white/10 hover:text-white">
+              <Mail className="w-3.5 h-3.5" />
+              Email Us
             </a>
             <a
               href={telHref(clinic.phone)}
-              className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/10 px-4 py-1.5 rounded-full font-semibold transition-colors text-white"
+              className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/10 px-3 py-1.5 rounded-full font-semibold transition-colors text-white text-xs"
             >
               <Phone className="w-3.5 h-3.5" />
-              {clinic.phone}
+              Call Us
             </a>
           </div>
         </div>
@@ -199,13 +217,6 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
 
             {/* CTA */}
             <div className="hidden lg:flex items-center gap-3">
-              <a
-                href={telHref(clinic.phone)}
-                className="flex items-center gap-2 text-sm font-medium text-neutral-600 hover:text-primary-600 transition-colors md:hidden lg:flex"
-              >
-                <Phone className="w-4 h-4" />
-                {clinic.phone}
-              </a>
               <button
                 onClick={() => handleNav('contact')}
                 className="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-md shadow-primary-200 hover:shadow-lg hover:shadow-primary-200 transition-all"
@@ -262,7 +273,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
                 className="flex items-center gap-2 text-primary-700 font-semibold px-4 py-2"
               >
                 <Phone className="w-4 h-4" />
-                {clinic.phone}
+                Call Us
               </a>
               <button
                 onClick={() => handleNav('contact')}
