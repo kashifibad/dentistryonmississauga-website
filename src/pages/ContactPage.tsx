@@ -125,6 +125,7 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
 
     try {
       if (web3FormsAccessKey) {
+        const patientName = `${form.firstName} ${form.lastName}`.trim();
         const response = await fetch(web3FormsEndpoint, {
           method: 'POST',
           headers: {
@@ -134,9 +135,12 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
           body: JSON.stringify({
             access_key: web3FormsAccessKey,
             subject,
-            from_name: `${form.firstName} ${form.lastName}`,
+            from_name: clinic.name,
+            name: patientName,
             email: form.email,
+            replyto: form.email,
             phone: form.phone,
+            botcheck: '',
             clinic: clinic.name,
             preferred_location: form.location || clinic.name,
             preferred_contact_method: form.preferredContact || 'Not specified',
@@ -201,12 +205,13 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
           throw new Error('Appointment request failed');
         }
       } else {
-        window.location.href = `mailto:${clinic.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        throw new Error('Missing form email configuration');
       }
 
       setSubmitted(true);
-    } catch {
-      setSubmitError('Sorry, we could not send the request right now. Please call the clinic or email us directly.');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '';
+      setSubmitError(message || 'Sorry, we could not send the request right now. Please call the clinic or email us directly.');
     } finally {
       setLoading(false);
     }
