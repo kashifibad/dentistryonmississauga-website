@@ -302,10 +302,10 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                     alt={`${clinic.name} clinic`}
                     className="w-full aspect-[4/3] object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/75 via-neutral-950/10 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/85 via-primary-950/20 to-neutral-950/15" />
 
                   <div className="hidden sm:flex absolute top-4 left-4 right-4 flex-wrap gap-3">
-                    <div className="glass rounded-xl px-3 py-2 shadow-lg">
+                    <div className="rounded-xl px-3 py-2 shadow-xl bg-neutral-950/80 border border-white/25 backdrop-blur-md">
                       <div className="flex items-center gap-2.5">
                         <div className="w-9 h-9 rounded-full bg-teal-500/30 flex items-center justify-center">
                           <Shield className="w-4 h-4 text-teal-300" />
@@ -317,7 +317,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                       </div>
                     </div>
 
-                    <div className="glass rounded-xl px-3 py-2 shadow-lg">
+                    <div className="rounded-xl px-3 py-2 shadow-xl bg-neutral-950/80 border border-white/25 backdrop-blur-md">
                       <div className="flex items-center gap-2.5">
                         <div className="w-9 h-9 rounded-full bg-green-400/30 flex items-center justify-center">
                           <CheckCircle className="w-4 h-4 text-green-300" />
@@ -330,7 +330,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                     </div>
                   </div>
 
-                  <div className="absolute left-4 right-4 bottom-4 glass rounded-xl p-4 shadow-lg">
+                  <div className="absolute left-4 right-4 bottom-4 rounded-xl p-4 shadow-2xl bg-neutral-950/85 border border-white/25 backdrop-blur-md">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div>
                         <p className="text-white font-bold">{clinic.name}</p>
