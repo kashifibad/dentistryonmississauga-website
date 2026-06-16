@@ -87,6 +87,7 @@ export default function Footer({ onNavigate }: FooterProps) {
               {[
                 { label: 'Home', page: 'home' },
                 { label: 'Insurance', page: 'insurance' },
+                { label: 'Forms', page: 'forms' },
                 { label: 'About Us', page: 'about' },
                 { label: 'Contact Us', page: 'contact' },
                 { label: 'Book Appointment', page: 'contact' },

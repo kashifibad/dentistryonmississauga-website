@@ -5,16 +5,18 @@ import HomePage from './pages/HomePage';
 import ServicesPage from './pages/ServicesPage';
 import AboutPage from './pages/AboutPage';
 import InsurancePage from './pages/CDCPPage';
+import FormsPage from './pages/FormsPage';
 import ContactPage from './pages/ContactPage';
 import PrivacyPage from './pages/PrivacyPage';
 import { clinic } from './config/clinic';
 
-type Page = 'home' | 'services' | 'insurance' | 'about' | 'contact' | 'privacy';
+type Page = 'home' | 'services' | 'insurance' | 'forms' | 'about' | 'contact' | 'privacy';
 
 const pagePaths: Record<Page, string> = {
   home: '/',
   services: '/services',
   insurance: '/insurance',
+  forms: '/forms',
   about: '/about',
   contact: '/contact',
   privacy: '/privacy',
@@ -25,6 +27,7 @@ const pathPages: Record<string, Page> = {
   '/services': 'services',
   '/insurance': 'insurance',
   '/cdcp': 'insurance',
+  '/forms': 'forms',
   '/about': 'about',
   '/contact': 'contact',
   '/privacy': 'privacy',
@@ -76,6 +79,8 @@ export default function App() {
         return <ServicesPage onNavigate={handleNavigate} />;
       case 'insurance':
         return <InsurancePage onNavigate={handleNavigate} />;
+      case 'forms':
+        return <FormsPage onNavigate={handleNavigate} />;
       case 'about':
         return <AboutPage onNavigate={handleNavigate} />;
       case 'contact':

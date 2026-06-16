@@ -40,6 +40,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
     { label: 'Home', page: 'home' },
     { label: 'Services', page: 'services', dropdown: 'services' },
     { label: 'Insurance', page: 'insurance', dropdown: 'insurance' },
+    { label: 'Forms', page: 'forms' },
     { label: 'About', page: 'about' },
     { label: 'Contact', page: 'contact' },
   ];
