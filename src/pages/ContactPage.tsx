@@ -56,6 +56,10 @@ const formModeContent = {
   },
 };
 
+const appointmentFormEndpoint = (import.meta.env.VITE_APPOINTMENT_FORM_ENDPOINT as string | undefined)?.trim();
+const web3FormsAccessKey = (import.meta.env.VITE_WEB3FORMS_ACCESS_KEY as string | undefined)?.trim();
+const web3FormsEndpoint = 'https://api.web3forms.com/submit';
+
 export default function ContactPage({ onNavigate }: { onNavigate?: (page: string) => void }) {
   const [formMode] = useState<ContactFormMode>(() => getContactFormMode());
   const activeFormContent = formModeContent[formMode];
@@ -118,11 +122,46 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
     ].join('\n');
 
     const subject = `Appointment request - ${clinic.name}`;
-    const endpoint = import.meta.env.VITE_APPOINTMENT_FORM_ENDPOINT as string | undefined;
 
     try {
-      if (endpoint) {
-        const response = await fetch(endpoint, {
+      if (web3FormsAccessKey) {
+        const response = await fetch(web3FormsEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            access_key: web3FormsAccessKey,
+            subject,
+            from_name: `${form.firstName} ${form.lastName}`,
+            email: form.email,
+            phone: form.phone,
+            clinic: clinic.name,
+            preferred_location: form.location || clinic.name,
+            preferred_contact_method: form.preferredContact || 'Not specified',
+            new_patient: form.newPatient || 'Not specified',
+            appointment_for: form.appointmentFor || 'Not specified',
+            urgency: form.urgency || 'Not specified',
+            service: form.service,
+            preferred_date: form.date || 'Not specified',
+            preferred_time: form.time || 'Not specified',
+            coverage_type: form.coverageType || 'Not specified',
+            insurance_provider_or_plan: form.insuranceProvider || 'Not specified',
+            policy_holder_relationship: form.policyHolder || 'Not specified',
+            coverage_notes: form.coverageNotes || 'None provided',
+            additional_notes: form.message || 'None provided',
+            message: body,
+          }),
+        });
+
+        const result = await response.json().catch(() => null);
+
+        if (!response.ok || result?.success === false) {
+          throw new Error(result?.message || 'Appointment request failed');
+        }
+      } else if (appointmentFormEndpoint) {
+        const response = await fetch(appointmentFormEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
