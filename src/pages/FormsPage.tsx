@@ -6,8 +6,9 @@ interface FormsPageProps {
 }
 
 export default function FormsPage({ onNavigate }: FormsPageProps) {
-  const goToContact = () => {
+  const goToContact = (formType: 'new-patient' | 'appointment') => {
     onNavigate('contact');
+    window.history.replaceState(null, '', `/contact?form=${formType}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -18,6 +19,7 @@ export default function FormsPage({ onNavigate }: FormsPageProps) {
       description:
         'Start here if this is your first visit. Share your contact details, preferred location, coverage information, and the reason for your visit so the clinic team can follow up prepared.',
       button: 'Start New Patient Intake',
+      formType: 'new-patient' as const,
     },
     {
       icon: CalendarCheck,
@@ -25,6 +27,7 @@ export default function FormsPage({ onNavigate }: FormsPageProps) {
       description:
         'Use this path if you are an existing patient or know the service you need. Send your preferred day, time, location, and visit reason for the team to confirm.',
       button: 'Request Appointment',
+      formType: 'appointment' as const,
     },
   ];
 
@@ -57,7 +60,7 @@ export default function FormsPage({ onNavigate }: FormsPageProps) {
                   <h2 className="text-2xl font-bold text-neutral-900 mb-3">{item.title}</h2>
                   <p className="text-neutral-600 leading-relaxed mb-6">{item.description}</p>
                   <button
-                    onClick={goToContact}
+                    onClick={() => goToContact(item.formType)}
                     className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-5 py-3 rounded-xl font-semibold transition-colors"
                   >
                     <FileText className="w-4 h-4" />

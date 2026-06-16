@@ -31,7 +31,34 @@ const coverageTypes = [
   'Other',
 ];
 
+type ContactFormMode = 'default' | 'new-patient' | 'appointment';
+
+const getContactFormMode = (): ContactFormMode => {
+  const mode = new URLSearchParams(window.location.search).get('form');
+  return mode === 'new-patient' || mode === 'appointment' ? mode : 'default';
+};
+
+const formModeContent = {
+  default: {
+    badge: 'Appointment Request',
+    title: 'Request an Appointment',
+    description: "Fill out the form and we'll contact you to confirm your appointment.",
+  },
+  'new-patient': {
+    badge: 'New Patient Intake',
+    title: 'Start Your New Patient Intake',
+    description: 'Tell us about your first visit, preferred location, coverage details, and dental concern so our team can follow up prepared.',
+  },
+  appointment: {
+    badge: 'Appointment Request',
+    title: 'Request an Appointment',
+    description: 'Send your preferred location, contact details, service request, and timing so our team can confirm the appointment.',
+  },
+};
+
 export default function ContactPage({ onNavigate }: { onNavigate?: (page: string) => void }) {
+  const [formMode] = useState<ContactFormMode>(() => getContactFormMode());
+  const activeFormContent = formModeContent[formMode];
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -48,7 +75,7 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
     insuranceProvider: '',
     policyHolder: '',
     coverageNotes: '',
-    newPatient: '',
+    newPatient: formMode === 'new-patient' ? 'yes' : formMode === 'appointment' ? 'no' : '',
     appointmentFor: '',
   });
   const [submitted, setSubmitted] = useState(false);
@@ -177,8 +204,11 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
             {/* Left: form */}
             <div className="lg:col-span-3" id="appointment-form">
               <div className="mb-8">
-                <h2 className="font-display text-3xl font-bold text-neutral-900 mb-2">Request an Appointment</h2>
-                <p className="text-neutral-500">Fill out the form and we'll contact you to confirm your appointment.</p>
+                <span className="inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary-700 mb-3">
+                  {activeFormContent.badge}
+                </span>
+                <h2 className="font-display text-3xl font-bold text-neutral-900 mb-2">{activeFormContent.title}</h2>
+                <p className="text-neutral-500">{activeFormContent.description}</p>
               </div>
 
               {submitted ? (
