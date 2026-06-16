@@ -126,37 +126,34 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
     try {
       if (web3FormsAccessKey) {
         const patientName = `${form.firstName} ${form.lastName}`.trim();
+        const formData = new FormData();
+        formData.append('access_key', web3FormsAccessKey);
+        formData.append('subject', subject);
+        formData.append('from_name', clinic.name);
+        formData.append('name', patientName);
+        formData.append('email', form.email);
+        formData.append('replyto', form.email);
+        formData.append('phone', form.phone);
+        formData.append('botcheck', '');
+        formData.append('clinic', clinic.name);
+        formData.append('preferred_location', form.location || clinic.name);
+        formData.append('preferred_contact_method', form.preferredContact || 'Not specified');
+        formData.append('new_patient', form.newPatient || 'Not specified');
+        formData.append('appointment_for', form.appointmentFor || 'Not specified');
+        formData.append('urgency', form.urgency || 'Not specified');
+        formData.append('service', form.service);
+        formData.append('preferred_date', form.date || 'Not specified');
+        formData.append('preferred_time', form.time || 'Not specified');
+        formData.append('coverage_type', form.coverageType || 'Not specified');
+        formData.append('insurance_provider_or_plan', form.insuranceProvider || 'Not specified');
+        formData.append('policy_holder_relationship', form.policyHolder || 'Not specified');
+        formData.append('coverage_notes', form.coverageNotes || 'None provided');
+        formData.append('additional_notes', form.message || 'None provided');
+        formData.append('message', body);
+
         const response = await fetch(web3FormsEndpoint, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-          body: JSON.stringify({
-            access_key: web3FormsAccessKey,
-            subject,
-            from_name: clinic.name,
-            name: patientName,
-            email: form.email,
-            replyto: form.email,
-            phone: form.phone,
-            botcheck: '',
-            clinic: clinic.name,
-            preferred_location: form.location || clinic.name,
-            preferred_contact_method: form.preferredContact || 'Not specified',
-            new_patient: form.newPatient || 'Not specified',
-            appointment_for: form.appointmentFor || 'Not specified',
-            urgency: form.urgency || 'Not specified',
-            service: form.service,
-            preferred_date: form.date || 'Not specified',
-            preferred_time: form.time || 'Not specified',
-            coverage_type: form.coverageType || 'Not specified',
-            insurance_provider_or_plan: form.insuranceProvider || 'Not specified',
-            policy_holder_relationship: form.policyHolder || 'Not specified',
-            coverage_notes: form.coverageNotes || 'None provided',
-            additional_notes: form.message || 'None provided',
-            message: body,
-          }),
+          body: formData,
         });
 
         const result = await response.json().catch(() => null);
