@@ -330,7 +330,17 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                     </div>
                   </div>
 
-                  <div className="absolute left-4 right-4 bottom-4 rounded-xl p-4 shadow-2xl bg-neutral-950/85 border border-white/25 backdrop-blur-md">
+                  <div className="sm:hidden absolute left-3 right-3 bottom-3 rounded-lg px-3 py-2 shadow-xl bg-neutral-950/85 border border-white/25 backdrop-blur-md">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-white text-sm font-bold truncate">{clinic.name}</p>
+                      <span className="inline-flex items-center gap-1 text-white text-sm font-bold shrink-0">
+                        {clinic.rating}
+                        <Star className="w-3.5 h-3.5 text-amber-300 fill-current" />
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="hidden sm:block absolute left-4 right-4 bottom-4 rounded-xl p-4 shadow-2xl bg-neutral-950/85 border border-white/25 backdrop-blur-md">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div>
                         <p className="text-white font-bold">{clinic.name}</p>
