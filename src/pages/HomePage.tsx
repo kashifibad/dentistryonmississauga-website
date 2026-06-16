@@ -292,95 +292,57 @@ export default function HomePage({ onNavigate }: HomePageProps) {
               </div>
             </div>
 
-            {/* Right - transparent orbital brand mark (hidden on mobile) */}
-            <div className="hidden lg:flex justify-center relative">
-              <div className="relative w-[420px] h-[420px] flex items-center justify-center">
-                {/* Glow platform */}
-                <div className="absolute inset-0 rounded-full bg-primary-400/20 blur-3xl scale-110" />
-
-                <div className="absolute inset-0 rounded-full border border-white/10" />
-                <div className="absolute inset-8 rounded-full border border-white/10" />
-                <div className="absolute inset-16 rounded-full border border-white/15" />
-
-                {[0, 90, 180, 270].map((deg, i) => (
-                  <div
-                    key={`brand-orbit-${i}`}
-                    className="absolute left-1/2 top-1/2"
-                    style={{
-                      animation: `spin${i % 2 === 0 ? 'CW' : 'CCW'} ${11 + i * 2}s linear infinite`,
-                      transform: `translate(-50%, -50%) rotate(${deg}deg) translateX(176px)`,
-                    }}
-                  >
-                    <div
-                      className="w-12 h-12 rounded-full glass flex items-center justify-center shadow-lg"
-                      style={{
-                        transform: `rotate(-${deg}deg)`,
-                        animation: `counterRotate${i % 2 === 0 ? 'CW' : 'CCW'} ${11 + i * 2}s linear infinite`,
-                      }}
-                    >
-                      {[Shield, Star, CheckCircle, Smile].map((Icon, iconIndex) => (
-                        iconIndex === i ? <Icon key={iconIndex} className="w-5 h-5 text-teal-200" /> : null
-                      ))}
-                    </div>
-                  </div>
-                ))}
-
-                <div className="relative z-10 w-32 h-32 rounded-full bg-white shadow-2xl shadow-black/25 border border-white/60 flex items-center justify-center overflow-hidden">
+            {/* Right - trust-building clinic photo */}
+            <div className="relative animate-fade-in-up animation-delay-400">
+              <div className="relative max-w-xl mx-auto">
+                <div className="absolute -inset-4 bg-primary-400/20 blur-3xl rounded-full" />
+                <div className="relative overflow-hidden rounded-2xl border border-white/20 shadow-2xl shadow-black/30 bg-white/10">
                   <img
-                    src="/brand-mark.png"
-                    alt={`${clinic.name} logo mark`}
-                    className="h-24 w-24 object-contain"
+                    src={clinic.heroImage}
+                    alt={`${clinic.name} clinic`}
+                    className="w-full aspect-[4/3] object-cover"
                   />
-                </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/75 via-neutral-950/10 to-transparent" />
 
-                <div className="absolute top-4 right-12 sparkle-1">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M8 0L9.2 6.8L16 8L9.2 9.2L8 16L6.8 9.2L0 8L6.8 6.8L8 0Z" fill="#7dd3fc" />
-                  </svg>
-                </div>
-                <div className="absolute bottom-12 left-10 sparkle-4">
-                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                    <path d="M8 0L9.2 6.8L16 8L9.2 9.2L8 16L6.8 9.2L0 8L6.8 6.8L8 0Z" fill="#bae6fd" />
-                  </svg>
-                </div>
-
-                {/* Floating cards */}
-                <div className="absolute -left-20 top-10 glass rounded-xl p-3 animate-float shadow-lg">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-full bg-teal-500/30 flex items-center justify-center">
-                      <Shield className="w-4 h-4 text-teal-300" />
+                  <div className="hidden sm:flex absolute top-4 left-4 right-4 flex-wrap gap-3">
+                    <div className="glass rounded-xl px-3 py-2 shadow-lg">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-full bg-teal-500/30 flex items-center justify-center">
+                          <Shield className="w-4 h-4 text-teal-300" />
+                        </div>
+                        <div>
+                          <p className="text-white text-xs font-semibold">Insurance Billing</p>
+                          <p className="text-white/70 text-xs">Direct & hassle-free</p>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-white text-xs font-semibold">Insurance Billing</p>
-                      <p className="text-white/70 text-xs">Direct & Hassle-free</p>
+
+                    <div className="glass rounded-xl px-3 py-2 shadow-lg">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-full bg-green-400/30 flex items-center justify-center">
+                          <CheckCircle className="w-4 h-4 text-green-300" />
+                        </div>
+                        <div>
+                          <p className="text-white text-xs font-semibold">CDCP Provider</p>
+                          <p className="text-white/70 text-xs">Government program</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="absolute -right-20 bottom-16 glass rounded-xl p-3 animate-float animation-delay-400 shadow-lg">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-full bg-amber-400/30 flex items-center justify-center">
-                      <Star className="w-4 h-4 text-amber-300 fill-current" />
-                    </div>
-                    <div>
-                      <p className="text-white text-xs font-semibold flex items-center gap-1">
-                        {clinic.rating}
-                        <Star className="w-3.5 h-3.5 text-amber-300 fill-current" />
-                        Rated
-                      </p>
-                      <p className="text-white/70 text-xs">Google Reviews</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="absolute -right-6 top-4 glass rounded-xl p-3 animate-float animation-delay-200 shadow-lg">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-full bg-green-400/30 flex items-center justify-center">
-                      <CheckCircle className="w-4 h-4 text-green-300" />
-                    </div>
-                    <div>
-                      <p className="text-white text-xs font-semibold">CDCP Provider</p>
-                      <p className="text-white/70 text-xs">Government program</p>
+                  <div className="absolute left-4 right-4 bottom-4 glass rounded-xl p-4 shadow-lg">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div>
+                        <p className="text-white font-bold">{clinic.name}</p>
+                        <p className="text-white/75 text-sm">Part of a connected group of 3 dental clinics</p>
+                      </div>
+                      <div className="flex items-center gap-2 text-white">
+                        <span className="inline-flex items-center gap-1 font-bold">
+                          {clinic.rating}
+                          <Star className="w-4 h-4 text-amber-300 fill-current" />
+                        </span>
+                        <span className="text-white/70 text-sm">Google rating</span>
+                      </div>
                     </div>
                   </div>
                 </div>
