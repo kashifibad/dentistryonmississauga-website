@@ -13,6 +13,7 @@ export default function LocationFinder({ compact = false, className = '', onNavi
   const [startingPoint, setStartingPoint] = useState('');
   const [geoMessage, setGeoMessage] = useState('');
   const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const hasManualStartingPoint = startingPoint.trim().length > 0 && !userCoords;
 
   const distanceFromUser = (lat: number, lng: number) => {
     if (!userCoords) return null;
@@ -85,6 +86,18 @@ export default function LocationFinder({ compact = false, className = '', onNavi
     );
   };
 
+  const handleCompareRoutes = () => {
+    const trimmedStartingPoint = startingPoint.trim();
+
+    if (!trimmedStartingPoint) {
+      setGeoMessage('Enter your address or postal code first, then compare directions for each clinic.');
+      return;
+    }
+
+    setGeoMessage('Your starting point is ready. Use the directions button on each clinic card to compare travel time in Google Maps.');
+    document.getElementById('clinic-location-cards')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  };
+
   return (
     <section id="locations" className={className}>
       <div className="text-center max-w-3xl mx-auto mb-8">
@@ -117,6 +130,18 @@ export default function LocationFinder({ compact = false, className = '', onNavi
           />
           <button
             type="button"
+            onClick={handleCompareRoutes}
+            className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
+              hasManualStartingPoint
+                ? 'bg-primary-600 text-white hover:bg-primary-700 shadow-sm'
+                : 'border border-neutral-200 text-neutral-500 hover:bg-neutral-50'
+            }`}
+          >
+            <Navigation className="w-4 h-4" />
+            Compare routes
+          </button>
+          <button
+            type="button"
             onClick={handleUseLocation}
             className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-200 px-4 py-3 text-sm font-semibold text-primary-700 hover:bg-primary-50 transition-colors"
           >
@@ -127,7 +152,7 @@ export default function LocationFinder({ compact = false, className = '', onNavi
         {geoMessage && <p className="mt-3 text-sm text-neutral-500">{geoMessage}</p>}
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div id="clinic-location-cards" className="grid md:grid-cols-3 gap-6 scroll-mt-28">
         {orderedLocations.map((location) => {
           const isCurrent = location.id === clinic.id;
           const isClosest = location.id === closestLocationId;
