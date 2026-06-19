@@ -256,12 +256,6 @@ export default function LocationFinder({ compact = false, className = '', onNavi
 
               <div className="p-6 flex flex-col flex-1">
                 <h3 className="text-xl font-black text-neutral-900 mb-2">{location.name}</h3>
-                {isClosest && (
-                  <div className="mb-3 inline-flex w-fit items-center gap-2 rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-teal-700">
-                    <LocateFixed className="h-3.5 w-3.5" />
-                    {closestBadgeText}
-                  </div>
-                )}
                 <div className="flex items-center gap-2 text-sm font-semibold text-amber-600 mb-4">
                   <Star className="w-4 h-4 fill-current" />
                   {location.rating} Google rating ({location.reviewCount} reviews)
