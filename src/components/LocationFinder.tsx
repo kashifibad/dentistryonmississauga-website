@@ -13,7 +13,24 @@ export default function LocationFinder({ compact = false, className = '', onNavi
   const [startingPoint, setStartingPoint] = useState('');
   const [geoMessage, setGeoMessage] = useState('');
   const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const hasManualStartingPoint = startingPoint.trim().length > 0 && !userCoords;
+  const [locationMode, setLocationMode] = useState<'browser' | 'manual' | null>(null);
+  const [isComparing, setIsComparing] = useState(false);
+  const hasStartingPoint = startingPoint.trim().length > 0;
+  const closestBadgeText =
+    locationMode === 'manual'
+      ? 'Closest based on your address'
+      : 'Closest based on your location';
+
+  const parseCoordinates = (value: string) => {
+    const match = value.trim().match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
+    if (!match) return null;
+
+    const lat = Number(match[1]);
+    const lng = Number(match[2]);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    return { lat, lng };
+  };
 
   const distanceFromUser = (lat: number, lng: number) => {
     if (!userCoords) return null;
@@ -77,6 +94,7 @@ export default function LocationFinder({ compact = false, className = '', onNavi
         const coords = `${position.coords.latitude},${position.coords.longitude}`;
         setStartingPoint(coords);
         setUserCoords({ lat: position.coords.latitude, lng: position.coords.longitude });
+        setLocationMode('browser');
         setGeoMessage('We highlighted the closest clinic by straight-line distance. Use Google Maps directions to confirm real travel time.');
       },
       () => {
@@ -86,7 +104,7 @@ export default function LocationFinder({ compact = false, className = '', onNavi
     );
   };
 
-  const handleCompareRoutes = () => {
+  const handleCompareRoutes = async () => {
     const trimmedStartingPoint = startingPoint.trim();
 
     if (!trimmedStartingPoint) {
@@ -94,8 +112,45 @@ export default function LocationFinder({ compact = false, className = '', onNavi
       return;
     }
 
-    setGeoMessage('Your starting point is ready. Use the directions button on each clinic card to compare travel time in Google Maps.');
-    document.getElementById('clinic-location-cards')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const parsedCoords = parseCoordinates(trimmedStartingPoint);
+    if (parsedCoords) {
+      setUserCoords(parsedCoords);
+      setLocationMode('manual');
+      setGeoMessage('We highlighted the closest clinic based on your starting point. Use Google Maps directions to confirm real travel time.');
+      document.getElementById('clinic-location-cards')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      return;
+    }
+
+    setIsComparing(true);
+    setGeoMessage('Checking that address so we can highlight the closest clinic...');
+
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=ca&q=${encodeURIComponent(trimmedStartingPoint)}`
+      );
+      const results = await response.json();
+      const firstResult = Array.isArray(results) ? results[0] : null;
+      const lat = Number(firstResult?.lat);
+      const lng = Number(firstResult?.lon);
+
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+        setUserCoords(null);
+        setLocationMode(null);
+        setGeoMessage('We could not find that address. Try adding the city and province, or use each directions button to compare in Google Maps.');
+        return;
+      }
+
+      setUserCoords({ lat, lng });
+      setLocationMode('manual');
+      setGeoMessage('We highlighted the closest clinic based on your address. Use Google Maps directions to confirm real travel time.');
+      document.getElementById('clinic-location-cards')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } catch {
+      setUserCoords(null);
+      setLocationMode(null);
+      setGeoMessage('We could not check that address right now. You can still use each directions button to compare travel time in Google Maps.');
+    } finally {
+      setIsComparing(false);
+    }
   };
 
   return (
@@ -118,10 +173,17 @@ export default function LocationFinder({ compact = false, className = '', onNavi
             id="starting-point"
             type="text"
             value={startingPoint}
-            onChange={(event) => setStartingPoint(event.target.value)}
+            onChange={(event) => {
+              setStartingPoint(event.target.value);
+              if (userCoords) {
+                setUserCoords(null);
+                setLocationMode(null);
+              }
+            }}
             onFocus={() => {
               if (userCoords) {
                 setUserCoords(null);
+                setLocationMode(null);
                 setGeoMessage('');
               }
             }}
@@ -131,14 +193,15 @@ export default function LocationFinder({ compact = false, className = '', onNavi
           <button
             type="button"
             onClick={handleCompareRoutes}
-            className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
-              hasManualStartingPoint
+            disabled={isComparing}
+            className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-colors disabled:cursor-wait disabled:opacity-75 ${
+              hasStartingPoint
                 ? 'bg-primary-600 text-white hover:bg-primary-700 shadow-sm'
                 : 'border border-neutral-200 text-neutral-500 hover:bg-neutral-50'
             }`}
           >
             <Navigation className="w-4 h-4" />
-            Compare routes
+            {isComparing ? 'Checking...' : 'Compare routes'}
           </button>
           <button
             type="button"
@@ -172,7 +235,7 @@ export default function LocationFinder({ compact = false, className = '', onNavi
             >
               {isClosest && (
                 <div className="absolute -top-4 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap rounded-full border border-teal-200 bg-teal-600 px-4 py-2 text-xs font-black uppercase tracking-wide text-white shadow-lg">
-                  Closest based on your location
+                  {closestBadgeText}
                 </div>
               )}
 
@@ -196,7 +259,7 @@ export default function LocationFinder({ compact = false, className = '', onNavi
                 {isClosest && (
                   <div className="mb-3 inline-flex w-fit items-center gap-2 rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-teal-700">
                     <LocateFixed className="h-3.5 w-3.5" />
-                    Closest based on your current location
+                    {closestBadgeText}
                   </div>
                 )}
                 <div className="flex items-center gap-2 text-sm font-semibold text-amber-600 mb-4">
