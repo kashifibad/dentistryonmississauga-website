@@ -23,6 +23,11 @@ export interface ClinicConfig {
   primary?: boolean;
   metaTitle: string;
   metaDescription: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+  web3FormsAccessKey: string;
 }
 
 export interface ClinicReview {
@@ -135,7 +140,9 @@ export const clinics: Record<ClinicId, ClinicConfig> = {
     website: 'https://dentistryonmississauga.com/',
     primary: true,
     metaTitle: 'Dentistry on Mississauga | Family Dental Clinic in Brampton and Mississauga',
-    metaDescription: 'Dentistry on Mississauga is part of a connected group of three dental clinics offering family, cosmetic, restorative, emergency, CDCP, and insurance-friendly dental care across Brampton, Mississauga, and the GTA.',
+    metaDescription: 'Dentistry on Mississauga is part of a connected group of three dental clinics offering family, cosmetic, restorative, emergency, CDCP, IFHP, ODSP, and insurance-friendly dental care across Brampton, Mississauga, and the GTA.',
+    coordinates: { lat: 43.6332058, lng: -79.7861626 },
+    web3FormsAccessKey: '885ccb5a-892e-4d15-a7b3-a806007411a3',
   },
   countryside: {
     id: 'countryside',
@@ -229,7 +236,9 @@ export const clinics: Record<ClinicId, ClinicConfig> = {
     heroImage: '/Country-Side-Dental.png',
     website: 'https://countrysidedentalclinic.com/',
     metaTitle: 'Countryside Dental Clinic | Family Dental Clinic in Brampton',
-    metaDescription: 'Countryside Dental Clinic is part of a connected group of three dental clinics offering family, cosmetic, restorative, emergency, CDCP, and insurance-friendly dental care across Brampton, Mississauga, and the GTA.',
+    metaDescription: 'Countryside Dental Clinic is part of a connected group of three dental clinics offering family, cosmetic, restorative, emergency, CDCP, IFHP, ODSP, and insurance-friendly dental care across Brampton, Mississauga, and the GTA.',
+    coordinates: { lat: 43.7785474, lng: -79.743357 },
+    web3FormsAccessKey: '4494e3e8-9f51-40cd-8391-d646b824ae6d',
   },
   ridgeway: {
     id: 'ridgeway',
@@ -322,7 +331,9 @@ export const clinics: Record<ClinicId, ClinicConfig> = {
     heroImage: '/Dentistry-on-Ridgeway.webp',
     website: 'https://dentistryonridgeway.com/',
     metaTitle: 'Dentistry on Ridgeway | Family Dental Clinic in Mississauga',
-    metaDescription: 'Dentistry on Ridgeway is part of a connected group of three dental clinics offering family, cosmetic, restorative, emergency, CDCP, and insurance-friendly dental care across Brampton, Mississauga, and the GTA.',
+    metaDescription: 'Dentistry on Ridgeway is part of a connected group of three dental clinics offering family, cosmetic, restorative, emergency, CDCP, IFHP, ODSP, and insurance-friendly dental care across Brampton, Mississauga, and the GTA.',
+    coordinates: { lat: 43.5384771, lng: -79.7267194 },
+    web3FormsAccessKey: '68705520-0357-42b2-989b-64bbd0224602',
   },
 };
 

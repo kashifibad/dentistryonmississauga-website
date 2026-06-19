@@ -20,6 +20,7 @@ const services = [
 
 const insuranceLinks = [
   { label: 'CDCP', page: 'insurance', hash: 'cdcp' },
+  { label: 'IFHP / Refugee Coverage', page: 'insurance', hash: 'ifhp' },
   { label: 'ODSP', page: 'insurance', hash: 'odsp' },
   { label: 'Private Insurance', page: 'insurance', hash: 'private-insurance' },
 ];

@@ -27,12 +27,13 @@ const services = [
     title: 'Emergency Dental Care',
     subtitle: 'Urgent Dental Support',
     image: 'https://images.pexels.com/photos/3844581/pexels-photo-3844581.jpeg?auto=compress&cs=tinysrgb&w=800',
-    description: 'Dental emergencies can happen suddenly. We welcome urgent concerns and help patients with tooth pain, swelling, broken teeth, lost restorations, and other dental issues that need prompt attention.',
+    description: 'Dental pain and urgent concerns can happen suddenly. Our clinics treat tooth pain, swelling, broken teeth, lost restorations, and possible infection concerns as high-priority requests. Call 911 for trouble breathing or swallowing, uncontrolled bleeding, major trauma, chest pain, fainting, or swelling spreading toward the throat, neck, or eye.',
     treatments: [
-      { name: 'Tooth pain and swelling', desc: 'Assessment and next-step guidance for sudden or persistent dental pain' },
-      { name: 'Chipped or broken teeth', desc: 'Care options to protect the tooth and restore comfort where possible' },
+      { name: 'Tooth pain and swelling', desc: 'High-priority assessment requests for sudden, severe, or persistent dental pain' },
+      { name: 'Possible infection or abscess concerns', desc: 'Prompt callback guidance for swelling, bad taste, pus, feverish feeling, or worsening pain' },
+      { name: 'Chipped, broken, or knocked-out teeth', desc: 'Urgent next-step guidance and care options where appropriate' },
       { name: 'Lost crowns or fillings', desc: 'Support for loose, broken, or missing restorations' },
-      { name: 'Emergency guidance', desc: 'If you have severe swelling, trouble breathing, uncontrolled bleeding, or a medical emergency, call 911' },
+      { name: 'Emergency red flags', desc: 'Call 911 for trouble breathing or swallowing, uncontrolled bleeding, major trauma, fainting, chest pain, or swelling spreading to the neck, throat, or eye' },
     ],
     color: 'from-red-700 to-red-800',
     lightBg: 'bg-red-50',
@@ -162,12 +163,13 @@ const services = [
   },
   {
     id: 'coverage',
-    title: 'CDCP, ODSP, Insurance & Direct Billing',
+    title: 'CDCP, IFHP, ODSP, Insurance & Direct Billing',
     subtitle: 'Coverage Support',
     image: 'https://images.pexels.com/photos/7088526/pexels-photo-7088526.jpeg?auto=compress&cs=tinysrgb&w=800',
-    description: 'Dental coverage can be confusing. Our team helps patients understand CDCP, ODSP, insurance, and direct billing options so the appointment process feels simpler.',
+    description: 'Dental coverage can be confusing. Our team helps patients understand CDCP, IFHP/refugee health coverage, ODSP, insurance, and direct billing options so the appointment process feels simpler.',
     treatments: [
       { name: 'CDCP patients welcome', desc: 'We help eligible patients navigate covered services and next steps' },
+      { name: 'IFHP / refugee coverage support', desc: 'Eligible patients can bring IFHP documentation so our team can help review coverage questions' },
       { name: 'Direct insurance billing', desc: 'We can bill many insurance plans directly to reduce paperwork' },
       { name: 'ODSP support', desc: 'Ask our team about ODSP-related dental coverage and documentation' },
       { name: 'Location guidance', desc: 'We can help you choose the clinic that best fits your location and care needs' },
@@ -287,7 +289,7 @@ export default function ServicesPage({ onNavigate }: ServicesPageProps) {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <h3 className="text-white font-bold text-2xl mb-2">Dental Emergency?</h3>
           <p className="mb-5" style={{ color: 'rgba(255,220,220,0.9)' }}>
-            We accept walk-in patients and help with urgent dental concerns. If you have severe swelling, trouble breathing, uncontrolled bleeding, or a medical emergency, call 911.
+            We treat dental pain, swelling, broken teeth, lost crowns or fillings, and possible infection concerns as high-priority requests. Call 911 for trouble breathing or swallowing, uncontrolled bleeding, major trauma, chest pain, fainting, or swelling spreading toward the throat, neck, or eye.
           </p>
           <a
             href={telHref(clinic.phone)}

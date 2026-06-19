@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Calendar, Clock, ExternalLink, LocateFixed, Map, MapPin, Navigation, Phone, Star } from 'lucide-react';
-import { allClinics, clinic, getDirectionsUrl, getMapSearchUrl, sharedHours, telHref } from '../config/clinic';
+import { Calendar, Clock, ExternalLink, LocateFixed, MapPin, Navigation, Phone, Star } from 'lucide-react';
+import { allClinics, clinic, getDirectionsUrl, sharedHours, telHref } from '../config/clinic';
 
 interface LocationFinderProps {
   compact?: boolean;
@@ -9,14 +9,40 @@ interface LocationFinderProps {
   onNavigate?: (page: string) => void;
 }
 
-export default function LocationFinder({ compact = false, showMaps = false, className = '', onNavigate }: LocationFinderProps) {
+export default function LocationFinder({ compact = false, className = '', onNavigate }: LocationFinderProps) {
   const [startingPoint, setStartingPoint] = useState('');
   const [geoMessage, setGeoMessage] = useState('');
+  const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
 
-  const orderedLocations = useMemo(
-    () => [clinic, ...allClinics.filter((item) => item.id !== clinic.id)],
-    []
-  );
+  const distanceFromUser = (lat: number, lng: number) => {
+    if (!userCoords) return null;
+
+    const toRadians = (value: number) => (value * Math.PI) / 180;
+    const earthRadiusKm = 6371;
+    const dLat = toRadians(lat - userCoords.lat);
+    const dLng = toRadians(lng - userCoords.lng);
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(toRadians(userCoords.lat)) *
+        Math.cos(toRadians(lat)) *
+        Math.sin(dLng / 2) ** 2;
+
+    return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  };
+
+  const orderedLocations = useMemo(() => {
+    const locations = [clinic, ...allClinics.filter((item) => item.id !== clinic.id)];
+
+    if (!userCoords) return locations;
+
+    return [...locations].sort((a, b) => {
+      const distanceA = distanceFromUser(a.coordinates.lat, a.coordinates.lng) ?? Number.MAX_VALUE;
+      const distanceB = distanceFromUser(b.coordinates.lat, b.coordinates.lng) ?? Number.MAX_VALUE;
+      return distanceA - distanceB;
+    });
+  }, [userCoords]);
+
+  const closestLocationId = userCoords ? orderedLocations[0]?.id : '';
 
   const handleBook = (locationId: string, website?: string) => {
     if (locationId === clinic.id) {
@@ -49,7 +75,8 @@ export default function LocationFinder({ compact = false, showMaps = false, clas
       (position) => {
         const coords = `${position.coords.latitude},${position.coords.longitude}`;
         setStartingPoint(coords);
-        setGeoMessage('Location added. Use Get directions to compare travel time in Google Maps.');
+        setUserCoords({ lat: position.coords.latitude, lng: position.coords.longitude });
+        setGeoMessage('We highlighted the closest clinic by straight-line distance. Use Google Maps directions to confirm real travel time.');
       },
       () => {
         setGeoMessage('Location access was not allowed. You can still enter an address or postal code.');
@@ -66,9 +93,8 @@ export default function LocationFinder({ compact = false, showMaps = false, clas
           Choose the Clinic That Works Best for You
         </h2>
         <p className="text-neutral-600 text-lg leading-relaxed">
-          A connected group of three dental clinics serving Brampton, Mississauga, and the greater GTA.
-          Not sure which clinic is closest?
-          Enter a starting point to open directions and compare travel time in Google Maps.
+          Enter your address or postal code to compare routes in Google Maps, or share your current location
+          to highlight the closest clinic by distance.
         </p>
       </div>
 
@@ -80,7 +106,13 @@ export default function LocationFinder({ compact = false, showMaps = false, clas
             type="text"
             value={startingPoint}
             onChange={(event) => setStartingPoint(event.target.value)}
-            placeholder="Enter address or postal code"
+            onFocus={() => {
+              if (userCoords) {
+                setUserCoords(null);
+                setGeoMessage('');
+              }
+            }}
+            placeholder="Enter your address or postal code"
             className="flex-1 rounded-xl border border-neutral-200 px-4 py-3 text-sm outline-none focus:border-primary-400 focus:ring-4 focus:ring-primary-100"
           />
           <button
@@ -98,78 +130,50 @@ export default function LocationFinder({ compact = false, showMaps = false, clas
       <div className="grid md:grid-cols-3 gap-6">
         {orderedLocations.map((location) => {
           const isCurrent = location.id === clinic.id;
+          const isClosest = location.id === closestLocationId;
+          const distanceKm = distanceFromUser(location.coordinates.lat, location.coordinates.lng);
           const directionsUrl = getDirectionsUrl(location.address, startingPoint);
-          const mapUrl = getMapSearchUrl(location.address);
 
           return (
             <article
               key={location.id}
-              className={`bg-white rounded-2xl border ${isCurrent ? 'border-primary-200 shadow-primary-100' : 'border-neutral-200'} shadow-lg overflow-hidden flex flex-col`}
+              className={`relative rounded-2xl border bg-white shadow-lg transition-all duration-300 ${
+                isClosest
+                  ? 'border-2 border-teal-500 shadow-2xl shadow-teal-100 ring-4 ring-teal-50'
+                  : isCurrent && !userCoords
+                    ? 'border-primary-200 shadow-primary-100'
+                    : 'border-neutral-200'
+              } flex flex-col`}
             >
+              {isClosest && (
+                <div className="absolute -top-4 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap rounded-full border border-teal-200 bg-teal-600 px-4 py-2 text-xs font-black uppercase tracking-wide text-white shadow-lg">
+                  Closest based on your location
+                </div>
+              )}
+
               {!compact && (
-                <div className="relative h-40 bg-neutral-100">
+                <div className="relative h-40 overflow-hidden rounded-t-2xl bg-neutral-100">
                   <img
                     src={location.heroImage}
                     alt={`${location.name} clinic`}
                     className="w-full h-full object-cover"
                   />
                   {isCurrent && (
-                    <span className="absolute top-3 left-3 rounded-full bg-primary-600 px-3 py-1 text-xs font-bold text-white">
+                    <span className="absolute top-3 left-3 rounded-full bg-primary-600 px-3 py-1 text-xs font-bold text-white shadow-sm">
                       Current Website
                     </span>
                   )}
                 </div>
               )}
 
-              {showMaps && (
-                <div className="relative h-44 overflow-hidden border-y border-neutral-100 bg-gradient-to-br from-sky-50 via-white to-teal-50">
-                  <div
-                    className="absolute inset-0 opacity-70"
-                    style={{
-                      backgroundImage:
-                        'linear-gradient(rgba(14, 165, 233, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(14, 165, 233, 0.12) 1px, transparent 1px)',
-                      backgroundSize: '28px 28px',
-                    }}
-                  />
-                  <div className="relative flex h-full flex-col justify-between p-5">
-                    <div className="flex items-start gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-primary-100 bg-white shadow-sm">
-                        <MapPin className="h-5 w-5 text-primary-600" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold uppercase tracking-wider text-primary-600">Map & directions</p>
-                        <p className="mt-1 text-sm font-semibold text-neutral-900">{location.name}</p>
-                        <p className="mt-1 text-xs leading-relaxed text-neutral-500">{location.address}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2">
-                      <a
-                        href={mapUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-lg border border-primary-100 bg-white px-3 py-2 text-xs font-bold text-primary-700 shadow-sm transition-colors hover:border-primary-300"
-                      >
-                        <Map className="h-4 w-4" />
-                        Open map
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                      <a
-                        href={directionsUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-3 py-2 text-xs font-bold text-white shadow-sm transition-colors hover:bg-primary-700"
-                      >
-                        <Navigation className="h-4 w-4" />
-                        Directions
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               <div className="p-6 flex flex-col flex-1">
                 <h3 className="text-xl font-black text-neutral-900 mb-2">{location.name}</h3>
+                {isClosest && (
+                  <div className="mb-3 inline-flex w-fit items-center gap-2 rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-teal-700">
+                    <LocateFixed className="h-3.5 w-3.5" />
+                    Closest based on your current location
+                  </div>
+                )}
                 <div className="flex items-center gap-2 text-sm font-semibold text-amber-600 mb-4">
                   <Star className="w-4 h-4 fill-current" />
                   {location.rating} Google rating ({location.reviewCount} reviews)
@@ -178,7 +182,14 @@ export default function LocationFinder({ compact = false, showMaps = false, clas
                 <div className="space-y-3 text-sm text-neutral-600 flex-1">
                   <p className="flex gap-3">
                     <MapPin className="w-4 h-4 text-primary-600 flex-shrink-0 mt-0.5" />
-                    <span>{location.address}</span>
+                    <span>
+                      {location.address}
+                      {distanceKm !== null && (
+                        <span className="mt-1 block text-xs font-bold text-teal-700">
+                          Approx. {distanceKm.toFixed(1)} km away by distance
+                        </span>
+                      )}
+                    </span>
                   </p>
                   <p className="flex gap-3">
                     <Phone className="w-4 h-4 text-primary-600 flex-shrink-0 mt-0.5" />

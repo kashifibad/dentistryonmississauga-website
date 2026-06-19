@@ -49,6 +49,14 @@ const coverageCards = [
     highlights: ['ODSP coverage review', 'Claim and billing guidance', 'Clear next steps before treatment'],
   },
   {
+    id: 'ifhp',
+    icon: FileText,
+    title: 'IFHP / Refugee Health Coverage',
+    subtitle: 'Government coverage support for eligible refugee and protected-person patients',
+    body: 'Eligible patients with Interim Federal Health Program coverage can ask our team for help reviewing documentation and confirming what dental services may be covered before treatment. Coverage rules, approvals, and patient eligibility can vary, so please bring your IFHP certificate or coverage details to your visit.',
+    highlights: ['IFHP documentation review', 'Eligibility and coverage guidance', 'Help with covered-service questions'],
+  },
+  {
     id: 'private-insurance',
     icon: CreditCard,
     title: 'Private Dental Insurance',
@@ -63,7 +71,7 @@ const bringItems = [
   'Plan member, certificate, or group number',
   'Plan holder name and date of birth',
   'Employer or benefits administrator name if available',
-  'CDCP, ODSP, or government benefit letter/card',
+  'CDCP, IFHP, ODSP, or government benefit letter/card',
   'Any estimate or treatment note you want us to review',
 ];
 
@@ -85,10 +93,10 @@ export default function InsurancePage({ onNavigate }: InsurancePageProps) {
               Insurance & Direct Billing
             </span>
             <h1 className="font-display text-5xl lg:text-6xl font-bold text-white mb-4">
-              Dental Insurance, CDCP & ODSP Support
+              Dental Insurance & Government Coverage Support
             </h1>
             <p className="text-primary-100 text-lg mb-8 max-w-3xl">
-              {clinicGroupMessage} We help patients understand CDCP, ODSP, and many private dental insurance plans so booking a dental visit feels simpler and clearer.
+              {clinicGroupMessage} We help patients understand CDCP, IFHP/refugee health coverage, ODSP, and many private dental insurance plans so booking a dental visit feels simpler and clearer.
             </p>
             <div className="flex flex-wrap gap-3">
               <button
@@ -129,7 +137,7 @@ export default function InsurancePage({ onNavigate }: InsurancePageProps) {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
             {coverageCards.map((card) => {
               const Icon = card.icon;
               return (
@@ -234,7 +242,7 @@ export default function InsurancePage({ onNavigate }: InsurancePageProps) {
                 {[
                   {
                     title: 'Review your coverage details',
-                    desc: 'Tell us whether you have CDCP, ODSP, employer benefits, private insurance, or no insurance, and we will guide the next step.',
+                    desc: 'Tell us whether you have CDCP, IFHP/refugee health coverage, ODSP, employer benefits, private insurance, or no insurance, and we will guide the next step.',
                   },
                   {
                     title: 'Submit many claims directly',

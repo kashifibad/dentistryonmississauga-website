@@ -60,7 +60,7 @@ const services = [
   {
     icon: Clock,
     title: 'Emergency Dental Care',
-    description: 'Support for tooth pain, swelling, chipped or broken teeth, lost crowns or fillings, and urgent dental concerns.',
+    description: 'High-priority support for dental pain, swelling, broken teeth, lost crowns or fillings, and urgent concerns. Call 911 for breathing trouble, uncontrolled bleeding, major trauma, or rapidly spreading swelling.',
     hash: 'emergency',
     color: 'from-teal-500 to-emerald-600',
     bg: 'bg-teal-50',
@@ -95,8 +95,8 @@ const services = [
   },
   {
     icon: Smile,
-    title: 'CDCP, ODSP & Insurance Support',
-    description: 'Coverage guidance, direct billing support, and help choosing the right location for your visit.',
+    title: 'CDCP, IFHP, ODSP & Insurance Support',
+    description: 'Government coverage guidance, direct billing support, and help choosing the right location for your visit.',
     hash: 'coverage',
     color: 'from-indigo-500 to-violet-600',
     bg: 'bg-indigo-50',
@@ -107,7 +107,7 @@ const services = [
 const features = [
   { icon: Award, label: 'Experienced Clinical Team', desc: 'Care led by a dentist with extensive experience across family, cosmetic, and restorative dentistry.' },
   { icon: Shield, label: 'Direct Insurance Billing', desc: 'We bill many insurance plans directly to make the visit simpler.' },
-  { icon: Clock, label: 'Walk-In & Emergency Care', desc: 'New and emergency patients are always welcome. We\'re here when you need us most.' },
+  { icon: Clock, label: 'Pain & Emergency Guidance', desc: 'Urgent dental pain requests are treated as high priority. Life-threatening symptoms should be directed to 911 immediately.' },
   { icon: Heart, label: 'Whole Family Care', desc: 'From pediatric dentistry to seniors, care for all ages with a personal touch.' },
 ];
 
@@ -115,6 +115,7 @@ const offers = [
   { text: 'Free Teeth Whitening' },
   { text: 'Direct Insurance Billing' },
   { text: 'CDCP Registered Provider' },
+  { text: 'IFHP / Refugee Coverage Support' },
   { text: '3 Connected Dental Clinics' },
   { text: 'Walk-In Patients Welcome' },
   { text: 'Emergency Dental Care' },
@@ -133,6 +134,10 @@ const coverageHighlights = [
   {
     title: 'ODSP support',
     text: 'Our team can help patients with ODSP dental coverage understand next steps before their appointment.',
+  },
+  {
+    title: 'IFHP / refugee health coverage',
+    text: 'Eligible patients with Interim Federal Health Program coverage can ask our team for help reviewing documentation and covered-service questions.',
   },
   {
     title: 'Coverage questions before you visit',
@@ -453,7 +458,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
                 Direct Billing Support Across All 3 Clinics
               </h2>
               <p className="text-neutral-600 text-lg leading-relaxed mb-6">
-                Across our connected group of dental clinics, we support CDCP, ODSP, and many private dental insurance plans. Our team can help review your coverage details, explain expected next steps, and direct you to the right clinic for your visit.
+                Across our connected group of dental clinics, we support CDCP, IFHP/refugee health coverage, ODSP, and many private dental insurance plans. Our team can help review your coverage details, explain expected next steps, and direct you to the right clinic for your visit.
               </p>
               <p className="text-neutral-500 text-sm leading-relaxed mb-7">
                 Coverage varies by plan, patient eligibility, and treatment. We will help verify details before your appointment whenever possible.
@@ -692,7 +697,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
             Ready for a Healthier Smile?
           </h2>
           <p className="text-primary-100 text-lg mb-8">
-            New and emergency patients are welcome across our connected group of three clinics. We accept CDCP, ODSP, and many major insurance plans.
+            New and emergency patients are welcome across our connected group of three clinics. We accept CDCP, IFHP/refugee health coverage where eligible, ODSP, and many major insurance plans.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
@@ -712,7 +717,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
             </a>
           </div>
           <p className="text-primary-200/70 text-sm mt-6">
-            Canadian Dental Care Plan (CDCP) Accepted | Direct Insurance Billing Available
+            CDCP, IFHP, ODSP, and Direct Insurance Billing Support Available
           </p>
         </div>
       </section>

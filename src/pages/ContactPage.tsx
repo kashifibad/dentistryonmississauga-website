@@ -24,6 +24,7 @@ const services = [
 const coverageTypes = [
   'CDCP (Canadian Dental Care Plan)',
   'ODSP',
+  'IFHP / Refugee Health Coverage',
   'Private Dental Insurance',
   'Employer Benefits',
   'No Insurance (Self-pay)',
@@ -85,6 +86,7 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const selectedClinic = Object.values(clinics).find((item) => item.name === form.location) || clinic;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -96,8 +98,8 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
     setSubmitError('');
 
     const body = [
-      `Clinic: ${clinic.name}`,
-      `Preferred location: ${form.location || clinic.name}`,
+      `Website submitted from: ${clinic.name}`,
+      `Selected clinic: ${selectedClinic.name}`,
       `Name: ${form.firstName} ${form.lastName}`,
       `Email: ${form.email}`,
       `Phone: ${form.phone}`,
@@ -121,22 +123,27 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
       form.message || 'None provided',
     ].join('\n');
 
-    const subject = `Appointment request - ${clinic.name}`;
+    const subject = `Appointment request - ${selectedClinic.name}`;
 
     try {
-      if (web3FormsAccessKey) {
+      const selectedAccessKey = selectedClinic.web3FormsAccessKey || web3FormsAccessKey;
+
+      if (selectedAccessKey) {
         const patientName = `${form.firstName} ${form.lastName}`.trim();
         const formData = new FormData();
-        formData.append('access_key', web3FormsAccessKey);
+        formData.append('access_key', selectedAccessKey);
         formData.append('subject', subject);
-        formData.append('from_name', clinic.name);
+        formData.append('from_name', `${selectedClinic.name} Website`);
         formData.append('name', patientName);
         formData.append('email', form.email);
         formData.append('replyto', form.email);
         formData.append('phone', form.phone);
         formData.append('botcheck', '');
-        formData.append('clinic', clinic.name);
-        formData.append('preferred_location', form.location || clinic.name);
+        formData.append('website_submitted_from', clinic.name);
+        formData.append('clinic', selectedClinic.name);
+        formData.append('clinic_phone', selectedClinic.phone);
+        formData.append('clinic_email', selectedClinic.email);
+        formData.append('preferred_location', selectedClinic.name);
         formData.append('preferred_contact_method', form.preferredContact || 'Not specified');
         formData.append('new_patient', form.newPatient || 'Not specified');
         formData.append('appointment_for', form.appointmentFor || 'Not specified');
@@ -167,8 +174,10 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             clinicId: clinic.id,
-            clinicName: clinic.name,
-            clinicEmail: clinic.email,
+            selectedClinicId: selectedClinic.id,
+            clinicName: selectedClinic.name,
+            clinicEmail: selectedClinic.email,
+            websiteClinicName: clinic.name,
             submittedAt: new Date().toISOString(),
             subject,
             message: body,
@@ -182,7 +191,7 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
               appointmentFor: form.appointmentFor,
             },
             appointment: {
-              preferredLocation: form.location,
+              preferredLocation: selectedClinic.name,
               urgency: form.urgency,
               service: form.service,
               preferredDate: form.date,
@@ -262,8 +271,8 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
                     Thank you, {form.firstName}! We've received your appointment request and will call or email you within one business day to confirm.
                   </p>
                   <p className="text-teal-600 text-sm mb-5">
-                    For immediate assistance, call us at{' '}
-                    <a href={telHref(clinic.phone)} className="font-bold hover:underline">{clinic.phone}</a>
+                    For immediate assistance, call {selectedClinic.name} at{' '}
+                    <a href={telHref(selectedClinic.phone)} className="font-bold hover:underline">{selectedClinic.phone}</a>
                   </p>
                   <button
                     onClick={() => setSubmitted(false)}
@@ -405,10 +414,10 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
                       <option value="">Select urgency...</option>
                       <option value="routine">Routine / preventive visit</option>
                       <option value="soon">Soon - discomfort or concern</option>
-                      <option value="urgent">Urgent - pain, swelling, broken tooth, or dental emergency</option>
+                      <option value="urgent">Urgent - dental pain, swelling, broken tooth, or possible infection</option>
                       <option value="not-sure">Not sure</option>
                     </select>
-                    <p className="text-xs text-neutral-400 mt-1.5">For severe swelling, trouble breathing, uncontrolled bleeding, or a medical emergency, call 911.</p>
+                    <p className="text-xs text-neutral-400 mt-1.5">Dental pain and possible infection requests are treated as high priority. Call 911 for trouble breathing or swallowing, uncontrolled bleeding, major trauma, chest pain, fainting, or swelling spreading toward the throat, neck, or eye.</p>
                   </div>
 
                   {/* Coverage */}
@@ -624,12 +633,12 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
                   <div>
                     <h4 className="font-semibold text-neutral-900">Insurance & Coverage Help</h4>
                     <p className="text-sm text-neutral-600 mt-1 leading-relaxed">
-                      We support CDCP, ODSP, and many private dental insurance plans. Share your coverage details in the appointment form and our team can help with direct billing questions before your visit.
+                      We support CDCP, IFHP/refugee health coverage where eligible, ODSP, and many private dental insurance plans. Share your coverage details in the appointment form and our team can help with direct billing questions before your visit.
                     </p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2 mt-4">
-                  {['CDCP registered', 'ODSP support', 'Private insurance', 'Self-pay questions'].map((item) => (
+                  {['CDCP registered', 'IFHP support', 'ODSP support', 'Private insurance'].map((item) => (
                     <div key={item} className="flex items-center gap-2 text-xs text-neutral-600 bg-neutral-50 rounded-lg px-3 py-2">
                       <CheckCircle className="w-3.5 h-3.5 text-teal-500 shrink-0" />
                       <span>{item}</span>
@@ -665,8 +674,8 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
                   <div className="flex items-center gap-3 bg-teal-50 border border-teal-200 rounded-xl p-3.5">
                     <Calendar className="w-5 h-5 text-teal-600" />
                     <div>
-                      <p className="text-sm font-medium text-teal-900">Walk-Ins Welcome</p>
-                      <p className="text-xs text-teal-600">No appointment needed for emergencies</p>
+                      <p className="text-sm font-medium text-teal-900">Pain & Emergency Guidance</p>
+                      <p className="text-xs text-teal-600">Urgent dental requests are prioritized</p>
                     </div>
                   </div>
                 </div>
@@ -677,8 +686,8 @@ export default function ContactPage({ onNavigate }: { onNavigate?: (page: string
                 <div className="flex gap-2.5">
                   <CheckCircle className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-semibold text-teal-900 text-sm">CDCP Patients Welcome</p>
-                    <p className="text-teal-700 text-xs mt-1">Eligible CDCP patients may have reduced or no out-of-pocket costs for covered services. We can help with direct billing and coverage questions.</p>
+                    <p className="font-semibold text-teal-900 text-sm">Government Coverage Support</p>
+                    <p className="text-teal-700 text-xs mt-1">Eligible patients with CDCP, IFHP/refugee health coverage, or ODSP benefits can ask our team for help reviewing coverage and direct billing options.</p>
                   </div>
                 </div>
               </div>
